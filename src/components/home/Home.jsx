@@ -291,21 +291,69 @@ function Home() {
                                 <img src={dots} alt="" className='w-1 h-4 ' />
                             </div>
                         </div>
-                        <div className='w-full bg-gray-300 flex justify-between items-center h-12 p-3 rounded-full mt-3'>
-                            <h1 className='font-normal'>Species</h1>
-                            <img src={dropdown} alt="" className='w-3 h-2' />
+                        <div className='w-full  flex justify-between items-center h-12 p-3 rounded-full mt-3'>
+                        <select
+                id="study-type"
+                className="sm:w-96 w-full border p-3 rounded-full mt-3 bg-gray-300 "
+                defaultValue=""
+              >
+                <option value="" disabled className=''>
+                  Select Study Type
+                </option>
+                <option value="Chest">Chest</option>
+                <option value="Abdomen">Abdomen</option>
+                <option value="Brain">Brain</option>
+                <option value="Spine">Spine</option>
+                <option value="Pelvis">Pelvis</option>
+              </select>
                         </div>
-                        <div className='w-full bg-gray-300 flex justify-between items-center h-12 p-3 rounded-full mt-3'>
-                            <h1 className='font-normal'>Modality Type</h1>
-                            <img src={dropdown} alt="" className='w-3 h-2' />
+                        <div className='w-full  flex justify-between items-center h-12 p-3 rounded-full mt-3'>
+                        <select
+                id="study-type"
+                className="sm:w-96 w-full border p-3 rounded-full mt-3 bg-gray-300 "
+                defaultValue=""
+              >
+                <option value="" disabled className=''>
+                  Select Study Type
+                </option>
+                <option value="Chest">Chest</option>
+                <option value="Abdomen">Abdomen</option>
+                <option value="Brain">Brain</option>
+                <option value="Spine">Spine</option>
+                <option value="Pelvis">Pelvis</option>
+              </select>
                         </div>
-                        <div className='w-full bg-gray-300 flex justify-between items-center h-12 p-3 rounded-full mt-3'>
-                            <h1 className='font-normal'>Study type</h1>
-                            <img src={dropdown} alt="" className='w-3 h-2' />
+                        <div className='w-full  flex justify-between items-center h-12 p-3 rounded-full mt-3'>
+                        <select
+                id="study-type"
+                className="sm:w-96 w-full border p-3 rounded-full mt-3 bg-gray-300 "
+                defaultValue=""
+              >
+                <option value="" disabled className=''>
+                  Select Study Type
+                </option>
+                <option value="Chest">Chest</option>
+                <option value="Abdomen">Abdomen</option>
+                <option value="Brain">Brain</option>
+                <option value="Spine">Spine</option>
+                <option value="Pelvis">Pelvis</option>
+              </select>
                         </div>
-                        <div className='w-full bg-gray-300 flex justify-between items-center h-12 p-3 rounded-full mt-3'>
-                            <h1 className='font-normal'>User ID</h1>
-                            <img src={dropdown} alt="" className='w-3 h-2' />
+                        <div className='w-full  flex justify-between items-center h-12 p-3 rounded-full mt-3'>
+                        <select
+                id="study-type"
+                className="sm:w-96 w-full border p-3 rounded-full mt-3 bg-gray-300 "
+                defaultValue=""
+              >
+                <option value="" disabled className=''>
+                  Select Study Type
+                </option>
+                <option value="Chest">Chest</option>
+                <option value="Abdomen">Abdomen</option>
+                <option value="Brain">Brain</option>
+                <option value="Spine">Spine</option>
+                <option value="Pelvis">Pelvis</option>
+              </select>
                         </div>
                     </div>
                 </div>
