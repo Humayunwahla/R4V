@@ -1,0 +1,10 @@
+.navbar-hafin {
+    display: none;
+  }
+  
+  /* Show on small screens and larger */
+  @media (min-width: 640px) { /* 640px is Tailwind's 'sm' breakpoint */
+    .navbar-hafin {
+      display: block;
+    }
+  }

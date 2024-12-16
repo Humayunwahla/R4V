@@ -1,0 +1,59 @@
+.template-subheading{
+    font-weight: 400;
+    font-size: 12px;
+    color: #5F6368;
+    line-height: 19.2px;
+}
+.macros-text{
+    color: #828282;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 12px;
+    margin-left: 5px;
+}
+.icon-macros{
+    width: 31px;
+    height: 31px;
+}
+.macros-height{
+    height: 400px;
+}
+.custom-scrollbar {
+    scrollbar-width: thin; /* For Firefox */
+    scrollbar-color: #CBEA7B transparent; /* Color and background */
+  
+    /* For Webkit-based browsers (Chrome, Edge, Safari) */
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling for mobile */
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 7px;
+    height: 46px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #CBEA7B;
+    border-radius: 20px;
+    border: 1px solid #CBEA7B; /* Optional for more visibility */
+  }
+  
+  .blur-content {
+    transition: filter 0.3s ease-in-out;
+  }
+  
+  .blur-up {
+    filter: blur(4px);
+  }
+  
+  .blur-down {
+    filter: blur(0px);
+  }
+
+  .table-heading{
+    font-size: 14px;
+    font-weight: 500;
+  }
