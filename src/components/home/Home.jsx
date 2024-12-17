@@ -13,6 +13,7 @@ import Footer from '../footer/Footer'
 
 function Home() {
   const navigate = useNavigate();
+  
 
   const [selectedCard, setSelectedCard] = useState(null);
   const [visibleRTE, setVisibleRTE] = useState([]);
@@ -371,13 +372,13 @@ function Home() {
             value={template.add_information.species}
             onChange={(e) => updateTemplate('species', e.target.value)}
           >
-            <option value="" disabled>Select Species</option>
+            <option value="" disabled >Select Species</option>
             {species.map((item, index) => (
-              <option value={item} key={index}>{item}</option>
+              <option value={item} key={index} >{item}</option>
             ))}
           </select>
         </div>
-
+         
         {/* Modality Type Dropdown */}
         <div className="w-full h-12 p-3 rounded-full mt-3">
           <select
