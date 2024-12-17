@@ -2,7 +2,7 @@ import React from 'react';
 
 function Card({ heading, paragraph, radioValue, className = '' , onRadioChange  }) {
   return (
-    <div className={`border border-gray-300 rounded-lg p-2 w-80 h-20 mx-auto shadow-sm flex justify-between ${
+    <div className={`border border-gray-300 rounded-lg p-2 w-80  h-20 mx-auto shadow-sm flex justify-between ${
       radioValue ? 'bg-[#CBEA7B80]' : 'bg-gray-200'
     } ${className}`}>
         <div>
