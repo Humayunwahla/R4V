@@ -11,16 +11,15 @@ import CriticalFinding from './pages/criticalFinding/CriticalFinding';
 import WetReads from './pages/wetReads/WetReads';
 import AttachedDocument from './pages/attachedDocument/AttachedDocument';
 import Layout from './Layout';
-import Header from '../src/components/Header'
+import Header from '../src/components/Header';
 
 const msalInstance = new PublicClientApplication(msalConfig);
 
 function App() {
-  const [accessToken, setAccessToken] = useState(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [accessToken, setAccessToken] = useState(localStorage.getItem('accessToken'));
+  const [isAuthenticated, setIsAuthenticated] = useState(!!accessToken);
   const [apiData, setApiData] = useState(null);
 
-  // Initialize the MSAL instance
   useEffect(() => {
     const initializeMsal = async () => {
       try {
@@ -32,7 +31,7 @@ function App() {
               requestAccessToken();
             } else {
               const accounts = msalInstance.getAllAccounts();
-              if (accounts.length > 0) {
+              if (accounts.length > 0 && !accessToken) {
                 requestAccessToken();
               }
             }
@@ -46,7 +45,7 @@ function App() {
     };
 
     initializeMsal();
-  }, []);
+  }, [accessToken]);
 
   const requestAccessToken = () => {
     msalInstance.acquireTokenSilent({
@@ -54,18 +53,22 @@ function App() {
       account: msalInstance.getAllAccounts()[0]
     })
       .then(tokenResponse => {
-        console.log("Token response from acquireTokenSilent:", tokenResponse);
-        setAccessToken(tokenResponse.idToken);
+        setToken(tokenResponse.idToken);
       })
       .catch(error => {
         console.error("Token acquisition failed silently. Attempting popup", error);
         return msalInstance.acquireTokenPopup(tokenRequest)
           .then(tokenResponse => {
-            console.log("Token response from acquireTokenPopup:", tokenResponse);
-            setAccessToken(tokenResponse.idToken);
+            setToken(tokenResponse.idToken);
           })
           .catch(error => console.error("Popup token acquisition failed", error));
       });
+  };
+
+  const setToken = (token) => {
+    setAccessToken(token);
+    localStorage.setItem('accessToken', token);
+    setIsAuthenticated(true);
   };
 
   const handleLogin = () => {
@@ -74,13 +77,18 @@ function App() {
 
   const handleLogout = () => {
     msalInstance.logoutRedirect();
+    localStorage.removeItem('accessToken');
     setIsAuthenticated(false);
     setAccessToken(null);
     setApiData(null);
   };
 
-  // Function to get data from the API
   const getDataFromApi = () => {
+    if (!accessToken) {
+      console.error("No access token available");
+      return;
+    }
+
     let data = JSON.stringify({
       "catalogType": 3
     });
@@ -98,7 +106,6 @@ function App() {
 
     axios.request(config)
       .then((response) => {
-        console.log("API response:", response.data);
         setApiData(JSON.stringify(response.data, null, 2)); // Format JSON for display
       })
       .catch((error) => {
@@ -111,19 +118,19 @@ function App() {
     <div className='p-3'>
       {isAuthenticated ? (
         <>
-        <Header />
-        <Router>
-          <Routes>
-            <Route path='/' element={<Landingpage />} />
-            <Route path="/" element={<Layout />}>
-              <Route path='/patient' element={<Patient />} />
-              <Route path="/studydetails" element={<StudyDetails />} />
-              <Route path="/criticalfindings" element={<CriticalFinding />} />
-              <Route path="/wetreads" element={<WetReads />} />
-              <Route path="/attacheddocument" element={<AttachedDocument />} />
-            </Route>
-          </Routes>
-        </Router>
+          <Header />
+          <Router>
+            <Routes>
+              <Route path='/' element={<Landingpage />} />
+              <Route path="/" element={<Layout />}>
+                <Route path='/patient' element={<Patient />} />
+                <Route path="/studydetails" element={<StudyDetails />} />
+                <Route path="/criticalfindings" element={<CriticalFinding />} />
+                <Route path="/wetreads" element={<WetReads />} />
+                <Route path="/attacheddocument" element={<AttachedDocument />} />
+              </Route>
+            </Routes>
+          </Router>
         </>
       ) : (
         <button onClick={handleLogin}>Login with Microsoft</button>
