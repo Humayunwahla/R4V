@@ -125,7 +125,7 @@ function Home() {
 
           <Card
             heading="Header"
-            paragraph="This is a sample paragraph inside the card."
+            paragraph="This is a sample paragraph ."
             className=""
             radioValue={visibleRTE.includes(0)}
             onRadioChange={() => handleRadioChange(0)}
@@ -164,11 +164,11 @@ function Home() {
 
       {/** Table section */}
       <div className="mt-8 overflow-x-auto">
-        <table className="table-auto border-collapse border bg-white min-w-full text-left">
+        <table className="table-auto  border bg-white min-w-full text-left">
           <thead className="text-sm">
             <tr>
               <th className="border px-2 py-2">
-                <div className="flex gap-2">
+                <div className="flex gap-2 w-20">
                   <p>Species</p>
                   <span className="bg-gray-200 w-6 h-6 rounded-full flex justify-center items-center">
                     <img src={filter} alt="" className="w-3 h-3" />
@@ -236,7 +236,7 @@ function Home() {
                 <td className="border border-gray-300 px-4 py-2 font-dmSans">CT Scan</td>
                 <td className="border border-gray-300 px-4 py-2 font-dmSans">Chestnut Robin</td>
                 <td className="border border-gray-300 px-4 py-2 font-dmSans">A1B2C3</td>
-                <td className="border border-gray-300 px-4 py-2 font-dmSans">
+                <td className="border border-gray-300 px-4 py-2 font-dmSans ">
                   The American Robin, with its orange belly, hops in gardens searching for worms. Keep an eye on your pet if they get hurt.
                 </td>
                 <td className="border border-gray-300 px-4 py-2 font-dmSans">Sunny Jay</td>
@@ -349,7 +349,7 @@ function Home() {
           </div>
 
           {/**Add Information Section */}
-          <div className="p-3 bg-white rounded-2xl">
+          <div className="p-3 bg-white rounded-2xl font-poppins">
         <div className="flex gap-2 justify-between">
           <div className="flex gap-3">
             <div className="w-11 h-11 bg-gray-200 rounded-full flex justify-center items-center">
@@ -408,7 +408,7 @@ function Home() {
         </div>
 
         {/* User ID Dropdown */}
-        <div className="w-full h-12 p-3 rounded-full mt-3">
+        <div className="w-full h-12 p-3 rounded-full mt-3 mb-4">
           <select
             className="w-full border p-3 rounded-full bg-gray-300"
             value={template.add_information.user_id}

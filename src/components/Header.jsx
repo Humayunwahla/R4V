@@ -9,56 +9,56 @@ function Header() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   return (
     <div className=''>
-        <div className='p-8  flex flex-wrap justify-between items-center'>
+        <div className='p-5 xl:p-8  flex flex-wrap justify-between items-center'>
 
       <div>
         <img src={logo} alt="" className='w-20 h-6' />
       </div>
-      <div className='hidden gap-3 xl:flex flex-row '>
+      <div className='hidden gap-1.5 xl:gap-3 lg:flex flex-row '>
 
-      <button className='flex bg-gray-200 rounded-full h-11 justify-between px-5 gap-2.5 items-center'>
+      <button className='flex bg-gray-200 rounded-full h-10 xl:h-11 justify-between px-3 xl:px-5 gap-2.5 items-center'>
        
-           <h1 className='text-sm'>Masters</h1>
+           <h1 className='text-xs xl:text-sm'>Masters</h1>
        
       
          <img src={dropdown} alt="" className='w-2.5 h-1.5 ' />
        
       </button>
-      <button className='flex bg-gray-200 rounded-full h-11 justify-between px-5 gap-2.5 items-center'>
+      <button className='flex bg-gray-200 rounded-full  h-10 xl:h-11 justify-between px-3 xl:px-5 gap-2.5 items-center'>
        
-       <h1 className='text-sm'>Case Management</h1>
+       <h1 className='text-xs xl:text-sm'>Case Management</h1>
    
   
      <img src={dropdown} alt="" className='w-2.5 h-1.5 ' />
    
   </button>
-  <button className='flex bg-gray-200 rounded-full h-11 justify-between px-5 gap-2.5 items-center'>
+  <button className='flex bg-gray-200 rounded-full  h-10 xl:h-11 justify-between px-3 xl:px-5 gap-2.5 items-center'>
        
-       <h1 className='text-sm'>Account</h1>
+       <h1 className='text-xs xl:text-sm'>Account</h1>
    
   
      <img src={dropdown} alt="" className='w-2.5 h-1.5 ' />
    
   </button>
-  <button className='flex bg-gray-200 rounded-full h-11 justify-between px-5 gap-2.5 items-center'>
+  <button className='flex bg-gray-200 rounded-full h-10 xl:h-11 justify-between px-3 xl:px-5 gap-2.5 items-center'>
        
-       <h1 className='text-sm'>Reports</h1>
+       <h1 className='text-xs xl:text-sm'>Reports</h1>
    
   
      <img src={dropdown} alt="" className='w-2.5 h-1.5 ' />
    
   </button>
-  <button className='flex bg-gray-200 rounded-full h-11 justify-between px-5 gap-2.5 items-center'>
+  <button className='flex bg-gray-200 rounded-full  h-10 xl:h-11 justify-between px-3 xl:px-5 gap-2.5 items-center'>
        
-       <h1 className='text-sm'>Dashboard</h1>
+       <h1 className='text-xs xl:text-sm'>Dashboard</h1>
    
   
      <img src={dropdown} alt="" className='w-2.5 h-1.5 ' />
    
   </button>
-  <button className='flex bg-gray-200 rounded-full h-11 justify-between px-5 gap-2.5 items-center'>
+  <button className='flex bg-gray-200 rounded-full  h-10 xl:h-11 justify-between px-3 xl:px-5 gap-2.5 items-center'>
        
-       <h1 className='text-sm'>App setting</h1>
+       <h1 className='text-xs xl:text-sm'>App setting</h1>
    
   
      <img src={dropdown} alt="" className='w-2.5 h-1.5 ' />
@@ -138,20 +138,20 @@ function Header() {
         </div>
       )}
       <div className='hidden  lg:flex flex-row gap-1'>
-        <div className='bg-gray-200 h-12 w-12 rounded-full justify-items-center  place-content-center'>
-          <img src={notification} alt="" className='h-5 w-4 ' />
+        <div className='bg-gray-200 w-9 h-9 xl:h-12 xl:w-12 rounded-full justify-items-center  place-content-center'>
+          <img src={notification} alt="" className=' h-3 w-2 xl:h-5 xl:w-4 ' />
         </div>
-        <div className='bg-gray-200 h-12 w-12 rounded-full justify-items-center  place-content-center'>
-          <img src={message} alt="" className='h-5 w-4 ' />
+        <div className='bg-gray-200 w-9 h-9 xl:h-12 xl:w-12 rounded-full justify-items-center  place-content-center'>
+          <img src={message} alt="" className='h-3 w-2 xl:h-5 xl:w-4 ' />
         </div>
-        <div className='bg-gray-200 h-12 w-12 rounded-full justify-items-center  place-content-center'>
-          <img src={analytics} alt="" className='h-5 w-4 ' />
+        <div className='bg-gray-200 w-9 h-9 xl:h-12 xl:w-12 rounded-full justify-items-center  place-content-center'>
+          <img src={analytics} alt="" className='h-3 w-2 xl:h-5 xl:w-4 ' />
         </div>
       </div>
       <div>
-      <button className='hidden lg:flex bg-gray-200 rounded-full h-11 justify-between  pr-2 gap-2 items-center'>
+      <button className='hidden lg:flex bg-gray-200 rounded-full h-9 xl:h-11 justify-between  pr-2 gap-2 items-center'>
        
-      <img src={profile} alt="" className='w-10 h-10 rounded-full' />
+      <img src={profile} alt="" className='h-8 w-8 xl:w-10 xl:h-10 rounded-full' />
    
   
      <img src={dropdown} alt="" className='w-2 h-1.5 ' />
