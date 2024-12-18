@@ -154,7 +154,7 @@ function Home() {
         <div onClick={() => handleCardClick(3)}>
 
           <Card
-            heading="Another Card"
+            heading="Macros"
             paragraph="Another description for this card."
             className=""
 
