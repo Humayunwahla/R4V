@@ -35,7 +35,7 @@ function Home() {
       macros: {},
     },
   });
-
+  
   const updateTemplate = (key, value) => {
     setTemplate((prev) => ({
       ...prev,
