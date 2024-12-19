@@ -1,7 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import { PublicClientApplication } from "@azure/msal-browser";
-import { msalConfig, loginRequest, tokenRequest } from './utils/authConfig';
-import axios from 'axios';
+import React, { useContext } from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 
 import Landingpage from './components/Landingpage';
@@ -11,77 +8,12 @@ import CriticalFinding from './pages/criticalFinding/CriticalFinding';
 import WetReads from './pages/wetReads/WetReads';
 import AttachedDocument from './pages/attachedDocument/AttachedDocument';
 import Layout from './Layout';
-import Header from '../src/components/Header';
-
-const msalInstance = new PublicClientApplication(msalConfig);
+import Header from './components/Header';
+import axios from 'axios';
+import { UserContext } from './context/UserContext/userContext';
 
 function App() {
-  const [accessToken, setAccessToken] = useState(localStorage.getItem('accessToken'));
-  const [isAuthenticated, setIsAuthenticated] = useState(!!accessToken);
-  const [apiData, setApiData] = useState(null);
-
-  useEffect(() => {
-    const initializeMsal = async () => {
-      try {
-        await msalInstance.initialize();
-        msalInstance.handleRedirectPromise()
-          .then(response => {
-            if (response) {
-              setIsAuthenticated(true);
-              requestAccessToken();
-            } else {
-              const accounts = msalInstance.getAllAccounts();
-              if (accounts.length > 0 && !accessToken) {
-                requestAccessToken();
-              }
-            }
-          })
-          .catch(error => {
-            console.error("Login redirect error", error);
-          });
-      } catch (error) {
-        console.error("MSAL initialization failed", error);
-      }
-    };
-
-    initializeMsal();
-  }, [accessToken]);
-
-  const requestAccessToken = () => {
-    msalInstance.acquireTokenSilent({
-      ...tokenRequest,
-      account: msalInstance.getAllAccounts()[0]
-    })
-      .then(tokenResponse => {
-        setToken(tokenResponse.idToken);
-      })
-      .catch(error => {
-        console.error("Token acquisition failed silently. Attempting popup", error);
-        return msalInstance.acquireTokenPopup(tokenRequest)
-          .then(tokenResponse => {
-            setToken(tokenResponse.idToken);
-          })
-          .catch(error => console.error("Popup token acquisition failed", error));
-      });
-  };
-
-  const setToken = (token) => {
-    setAccessToken(token);
-    localStorage.setItem('accessToken', token);
-    setIsAuthenticated(true);
-  };
-
-  const handleLogin = () => {
-    msalInstance.loginRedirect(loginRequest);
-  };
-
-  const handleLogout = () => {
-    msalInstance.logoutRedirect();
-    localStorage.removeItem('accessToken');
-    setIsAuthenticated(false);
-    setAccessToken(null);
-    setApiData(null);
-  };
+  const { accessToken, isAuthenticated, handleLogin, handleLogout } = useContext(UserContext);
 
   const getDataFromApi = () => {
     if (!accessToken) {
@@ -89,11 +21,11 @@ function App() {
       return;
     }
 
-    let data = JSON.stringify({
+    const data = JSON.stringify({
       "catalogType": 3
     });
 
-    let config = {
+    const config = {
       method: 'post',
       maxBodyLength: Infinity,
       url: 'https://devvetsapimanagement.azure-api.net/ReportingMicroservice/api/Catalog/GetCatalog',
@@ -103,14 +35,13 @@ function App() {
       },
       data: data
     };
-    
+
     axios.request(config)
       .then((response) => {
-        setApiData(JSON.stringify(response.data, null, 2)); // Format JSON for display
+        console.log("API response:", response.data);
       })
       .catch((error) => {
         console.error("API request error", error);
-        setApiData("Error: " + error.message);
       });
   };
 
@@ -118,7 +49,7 @@ function App() {
     <div className='p-3'>
       {isAuthenticated ? (
         <>
-          <Header logout={handleLogout}/>
+          <Header logout={handleLogout} />
           <Router>
             <Routes>
               <Route path='/' element={<Landingpage />} />
