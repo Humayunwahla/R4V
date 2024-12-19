@@ -35,7 +35,7 @@ function Home() {
       macros: {},
     },
   });
-  
+
   const updateTemplate = (key, value) => {
     setTemplate((prev) => ({
       ...prev,
@@ -163,67 +163,68 @@ function Home() {
       </div>
 
       {/** Table section */}
-      <div className="mt-8 overflow-x-auto">
+      <div className="mt-8 overflow-scroll">
         <table className="table-auto  border bg-white min-w-full text-left">
           <thead className="text-sm">
-            <tr>
-              <th className="border px-2 py-2">
-                <div className="flex gap-2 w-20">
-                  <p>Species</p>
-                  <span className="bg-gray-200 w-6 h-6 rounded-full flex justify-center items-center">
-                    <img src={filter} alt="" className="w-3 h-3" />
-                  </span>
-                </div>
-              </th>
-              <th className="border px-2 py-2">
-                <div className="flex gap-4">
-                  <p>Modality Type</p>
-                  <span className="bg-gray-200 w-6 h-6 rounded-full flex justify-center items-center">
-                    <img src={filter} alt="" className="w-3 h-3" />
-                  </span>
-                </div>
-              </th>
-              <th className="border px-2 py-2">
-                <div className="flex gap-2">
-                  <p>Study Type</p>
-                  <span className="bg-gray-200 w-6 h-6 rounded-full flex justify-center items-center">
-                    <img src={filter} alt="" className="w-3 h-3" />
-                  </span>
-                </div>
-              </th>
-              <th className="border px-2 py-2">
-                <div className="flex gap-2">
-                  <p>User ID’s</p>
-                  <span className="bg-gray-200 w-6 h-6 rounded-full flex justify-center items-center">
-                    <img src={filter} alt="" className="w-3 h-3" />
-                  </span>
-                </div>
-              </th>
-              <th className="border px-2 py-2">
-                <div className="flex gap-2">
-                  <p>Macros</p>
-                  <span className="bg-gray-200 w-6 h-6 rounded-full flex justify-center items-center">
-                    <img src={filter} alt="" className="w-3 h-3" />
-                  </span>
-                </div>
-              </th>
-              <th className="border px-2 py-2">
-                <div className="flex gap-2">
-                  <p>Templates</p>
-                  <span className="bg-gray-200 w-6 h-6 rounded-full flex justify-center items-center">
-                    <img src={filter} alt="" className="w-3 h-3" />
-                  </span>
-                </div>
-              </th>
-              <th className="border px-2 py-2">
-                <div className="flex gap-2">
-                  <p>Edits</p>
-                  <span className="bg-gray-200 w-6 h-6 rounded-full flex justify-center items-center">
-                    <img src={filter} alt="" className="w-3 h-3" />
-                  </span>
-                </div>
-              </th>
-            </tr>
+          <tr>
+  <th className="border px-2 py-2 min-w-[150px]">
+    <div className="flex gap-2 items-center ">
+      <p>Species</p>
+      <span className="bg-gray-200 w-6 h-6 rounded-full flex justify-center items-center">
+        <img src={filter} alt="" className="w-3 h-3" />
+      </span>
+    </div>
+  </th>
+  <th className="border px-2 py-2 min-w-[200px]">
+    <div className="flex gap-2 items-center ">
+      <p>Modality Type</p>
+      <span className="bg-gray-200 w-6 h-6 rounded-full flex justify-center items-center">
+        <img src={filter} alt="" className="w-3 h-3" />
+      </span>
+    </div>
+  </th>
+  <th className="border px-2 py-2 min-w-[150px]">
+    <div className="flex gap-2 items-center ">
+      <p>Study Type</p>
+      <span className="bg-gray-200 w-6 h-6 rounded-full flex justify-center items-center">
+        <img src={filter} alt="" className="w-3 h-3" />
+      </span>
+    </div>
+  </th>
+  <th className="border px-2 py-2 min-w-[150px]">
+    <div className="flex gap-2 items-center ">
+      <p>User ID’s</p>
+      <span className="bg-gray-200 w-6 h-6 rounded-full flex justify-center items-center">
+        <img src={filter} alt="" className="w-3 h-3" />
+      </span>
+    </div>
+  </th>
+  <th className="border px-2 py-2 min-w-[320px]">
+    <div className="flex gap-2 items-center ">
+      <p>Macros</p>
+      <span className="bg-gray-200 w-6 h-6 rounded-full flex justify-center items-center">
+        <img src={filter} alt="" className="w-3 h-3" />
+      </span>
+    </div>
+  </th>
+  <th className="border px-2 py-2 min-w-[150px]">
+    <div className="flex gap-2 items-center ">
+      <p>Templates</p>
+      <span className="bg-gray-200 w-6 h-6 rounded-full flex justify-center items-center">
+        <img src={filter} alt="" className="w-3 h-3" />
+      </span>
+    </div>
+  </th>
+  <th className="border px-2 py-2 min-w-[120px]">
+    <div className="flex gap-2 items-center ">
+      <p>Edits</p>
+      <span className="bg-gray-200 w-6 h-6 rounded-full flex justify-center items-center">
+        <img src={filter} alt="" className="w-3 h-3" />
+      </span>
+    </div>
+  </th>
+</tr>
+
           </thead>
           <tbody className="text-xs">
             {[...Array(5)].map((_, index) => (

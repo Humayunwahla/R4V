@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-import Navbar from '../../components/navbar/Navbar';
-import Menubar from '../../components/menubar/Menubar';
 import Footer from '../../components/footer/Footer';
 import RTE from '../../components/RTE';
 

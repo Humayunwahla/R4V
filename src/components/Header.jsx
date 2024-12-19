@@ -5,11 +5,19 @@ import notification from '../assets/icons/notification.png'
 import message from '../assets/icons/message.png'
 import analytics from '../assets/icons/analytics.png'
 import profile from '../assets/icons/profile.png'
-function Header() {
+function Header({logout}) {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen((prev) => !prev);
+  };
+
+  
   return (
     <div className=''>
-        <div className='p-5 xl:p-8  flex flex-wrap justify-between items-center'>
+        <div className='p-5 xl:p-8  flex  justify-between items-center'>
 
       <div>
         <img src={logo} alt="" className='w-20 h-6' />
@@ -148,15 +156,25 @@ function Header() {
           <img src={analytics} alt="" className='h-3 w-2 xl:h-5 xl:w-4 ' />
         </div>
       </div>
-      <div>
-      <button className='hidden lg:flex bg-gray-200 rounded-full h-9 xl:h-11 justify-between  pr-2 gap-2 items-center'>
-       
-      <img src={profile} alt="" className='h-8 w-8 xl:w-10 xl:h-10 rounded-full' />
-   
-  
-     <img src={dropdown} alt="" className='w-2 h-1.5 ' />
-   
-  </button>
+      <div className="relative">
+      <button
+        onClick={toggleDropdown}
+        className="hidden lg:flex bg-gray-200 rounded-full h-9 xl:h-11 justify-between pr-2 gap-2 items-center"
+      >
+        <img src={profile} alt="Profile" className="h-8 w-8 xl:w-10 xl:h-10 rounded-full" />
+        <img src={dropdown} alt="Dropdown" className="w-2 h-1.5" />
+      </button>
+
+  {isDropdownOpen && (
+        <div className="absolute right-0 mt-5 w-48 bg-gray-300 shadow-md rounded-md z-50">
+          <button
+            onClick={()=>logout()}
+            className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+          >
+            Logout
+          </button>
+        </div>
+      )}
       </div>
        {/* Drawer Toggle Button (Visible on Small Devices) */}
        <div className="lg:hidden">

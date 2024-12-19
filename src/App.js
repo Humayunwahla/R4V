@@ -103,7 +103,7 @@ function App() {
       },
       data: data
     };
-
+    
     axios.request(config)
       .then((response) => {
         setApiData(JSON.stringify(response.data, null, 2)); // Format JSON for display
@@ -118,7 +118,7 @@ function App() {
     <div className='p-3'>
       {isAuthenticated ? (
         <>
-          <Header />
+          <Header logout={handleLogout}/>
           <Router>
             <Routes>
               <Route path='/' element={<Landingpage />} />

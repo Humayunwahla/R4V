@@ -1,6 +1,4 @@
 import React, { useState } from 'react'
-import Navbar from '../../components/navbar/Navbar'
-import Menubar from '../../components/menubar/Menubar'
 import RTE from '../../components/RTE'
 import dot from '../../assets/icons/dot.png'
 import dots from '../../assets/icons/dots.png'
@@ -22,6 +20,7 @@ import { RiFilter2Line } from "react-icons/ri";
 function Patient() {
    const [isRecording, setIsRecording] = useState(false);
    const [recordedAudio, setRecordedAudio] = useState(null);
+
 
    const handleStartStopRecording = () => {
       setIsRecording((prevState) => !prevState);
