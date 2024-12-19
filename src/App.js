@@ -46,10 +46,10 @@ function App() {
   };
 
   return (
-    <div className='p-3'>
+    <div className='p-3 overflow-hidden'>
       {isAuthenticated ? (
         <>
-          <Header logout={handleLogout} />
+          <Header />
           <Router>
             <Routes>
               <Route path='/' element={<Landingpage />} />
