@@ -9,8 +9,8 @@ import WetReads from './pages/wetReads/WetReads';
 import AttachedDocument from './pages/attachedDocument/AttachedDocument';
 import Layout from './Layout';
 import Header from './components/Header';
-import axios from 'axios';
 import { UserContext } from './context/UserContext/userContext';
+import axios from 'axios';
 
 function App() {
   const { accessToken, isAuthenticated, handleLogin, handleLogout } = useContext(UserContext);

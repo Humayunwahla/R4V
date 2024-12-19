@@ -12,26 +12,36 @@ export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const initializeMsal = async () => {
-      try {
-        await msalInstance.initialize(); // Ensure MSAL is initialized
-        const response = await msalInstance.handleRedirectPromise();
-        if (response) {
-          setIsAuthenticated(true);
-          requestAccessToken();
-        } else {
-          const accounts = msalInstance.getAllAccounts();
-          if (accounts.length > 0) {
-            requestAccessToken();
-          }
-        }
-      } catch (error) {
-        console.error("MSAL initialization or redirection handling failed", error);
-      }
-    };
+    // Check localStorage for existing user session
+    const storedUser = JSON.parse(localStorage.getItem('user'));
+    const storedAccessToken = localStorage.getItem('accessToken');
 
-    initializeMsal();
+    if (storedUser && storedAccessToken) {
+      setUser(storedUser);
+      setAccessToken(storedAccessToken);
+      setIsAuthenticated(true);
+    } else {
+      initializeMsal();
+    }
   }, []);
+
+  const initializeMsal = async () => {
+    try {
+      await msalInstance.initialize(); // Ensure MSAL is initialized
+      const response = await msalInstance.handleRedirectPromise();
+      if (response) {
+        setIsAuthenticated(true);
+        requestAccessToken();
+      } else {
+        const accounts = msalInstance.getAllAccounts();
+        if (accounts.length > 0) {
+          requestAccessToken();
+        }
+      }
+    } catch (error) {
+      console.error("MSAL initialization or redirection handling failed", error);
+    }
+  };
 
   const requestAccessToken = () => {
     msalInstance.acquireTokenSilent({
@@ -39,15 +49,29 @@ export const UserProvider = ({ children }) => {
       account: msalInstance.getAllAccounts()[0]
     })
       .then(tokenResponse => {
-        setAccessToken(tokenResponse.idToken);
-        setUser(msalInstance.getAllAccounts()[0]);
+        const token = tokenResponse.idToken;
+        const currentUser = msalInstance.getAllAccounts()[0];
+        setAccessToken(token);
+        setUser(currentUser);
+        setIsAuthenticated(true);
+
+        // Store token and user in localStorage
+        localStorage.setItem('accessToken', token);
+        localStorage.setItem('user', JSON.stringify(currentUser));
       })
       .catch(error => {
         console.error("Token acquisition failed silently. Attempting popup", error);
         return msalInstance.acquireTokenPopup(tokenRequest)
           .then(tokenResponse => {
-            setAccessToken(tokenResponse.idToken);
-            setUser(msalInstance.getAllAccounts()[0]);
+            const token = tokenResponse.idToken;
+            const currentUser = msalInstance.getAllAccounts()[0];
+            setAccessToken(token);
+            setUser(currentUser);
+            setIsAuthenticated(true);
+
+            // Store token and user in localStorage
+            localStorage.setItem('accessToken', token);
+            localStorage.setItem('user', JSON.stringify(currentUser));
           })
           .catch(error => console.error("Popup token acquisition failed", error));
       });
@@ -62,6 +86,10 @@ export const UserProvider = ({ children }) => {
     setIsAuthenticated(false);
     setAccessToken(null);
     setUser(null);
+
+    // Clear localStorage on logout
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('user');
   };
 
   return (

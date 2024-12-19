@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import contact from "../../assets/icons/contact.png";
 import chatprofile from '../../assets/icons/chatprofile.png';
 import { FiVideo } from "react-icons/fi";
@@ -7,8 +7,10 @@ import { MdOutlineKeyboardVoice } from "react-icons/md";
 import { BsEmojiSmile } from "react-icons/bs";
 import send from '../../assets/icons/send.png';
 import './Footer.css';
+import { UserContext } from "../../context/UserContext/userContext";
 
 function Footer() {
+  const {user} = useContext(UserContext);
   const [isChatboxOpen, setIsChatboxOpen] = useState(false);
   const [messages, setMessages] = useState([]); // Unified array for all messages
   const [currentMessage, setCurrentMessage] = useState(""); // Input field value
@@ -85,7 +87,7 @@ function Footer() {
           >
             <div className='flex gap-3 place-content-center '>
               <img src={chatprofile} alt="" className='w- h-8 rounded-full' />
-              <h1 className='place-content-center'>Olivia Rice</h1>
+              <h1 className='place-content-center'>{user?.name}</h1>
             </div>
             <div className='gap-3 flex place-content-center '>
               <FiVideo />

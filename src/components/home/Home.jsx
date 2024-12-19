@@ -240,15 +240,11 @@ function Home() {
                 <td className="border border-gray-300 px-4 py-2 font-dmSans">
                   <button
                     onClick={(e) => {
-                      e.stopPropagation(); 
-                      handleEditClick(row);
-                      handleCardClick(0);  
-                      handleCardClick(1);  
-                      handleCardClick(2);  
-                      () => handleRadioChange(0);
-                      () => handleRadioChange(1);
-                      () => handleRadioChange(3);
-                      
+                      e.stopPropagation(); // Prevent the row click handler
+                      handleEditClick(row); // Handle the edit button click
+                      handleCardClick(0);   // Call handleCardClick for index 0
+                      handleCardClick(1);   // Call handleCardClick for index 1
+                      handleCardClick(2);   // Call handleCardClick for index 2
                     }}
                   >
                     Edit
