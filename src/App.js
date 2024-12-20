@@ -1,6 +1,5 @@
 import React, { useContext } from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
-
 import Landingpage from './components/Landingpage';
 import Patient from './pages/patient/Patient';
 import StudyDetails from './pages/studyDetails/StudyDetails';
@@ -9,22 +8,19 @@ import WetReads from './pages/wetReads/WetReads';
 import AttachedDocument from './pages/attachedDocument/AttachedDocument';
 import Layout from './Layout';
 import Header from './components/Header';
-import { UserContext } from './context/UserContext/userContext';
 import axios from 'axios';
-
+import { UserContext } from './context/UserContext/userContext';
+import Message from './components/Message/Message';
 function App() {
   const { accessToken, isAuthenticated, handleLogin, handleLogout } = useContext(UserContext);
-
   const getDataFromApi = () => {
     if (!accessToken) {
       console.error("No access token available");
       return;
     }
-
     const data = JSON.stringify({
       "catalogType": 3
     });
-
     const config = {
       method: 'post',
       maxBodyLength: Infinity,
@@ -35,7 +31,6 @@ function App() {
       },
       data: data
     };
-
     axios.request(config)
       .then((response) => {
         console.log("API response:", response.data);
@@ -44,13 +39,16 @@ function App() {
         console.error("API request error", error);
       });
   };
-
+  
   return (
     <div className='p-3 overflow-hidden'>
       {isAuthenticated ? (
         <>
           <Header />
           <Router>
+            <div className='fixed bottom-3 right-3 '>
+              <Message/>
+            </div>
             <Routes>
               <Route path='/' element={<Landingpage />} />
               <Route path="/" element={<Layout />}>
@@ -69,5 +67,14 @@ function App() {
     </div>
   );
 }
-
 export default App;
+
+
+
+
+
+
+
+
+
+

@@ -8,7 +8,8 @@ import profile from '../assets/icons/profile.png'
 import { UserContext } from '../context/UserContext/userContext'
 
 function Header() {
-  const { handleLogout } = useContext(UserContext);
+  const { handleLogout, accessToken } = useContext(UserContext);
+  // console.log("TOKEN", accessToken);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
