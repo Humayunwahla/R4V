@@ -12,7 +12,7 @@ import axios from 'axios';
 import { UserContext } from './context/UserContext/userContext';
 import Message from './components/Message/Message';
 function App() {
-  const { accessToken, isAuthenticated, handleLogin, handleLogout } = useContext(UserContext);
+  const { accessToken, isAuthenticated, handleLogin } = useContext(UserContext);
   const getDataFromApi = () => {
     if (!accessToken) {
       console.error("No access token available");
@@ -39,6 +39,7 @@ function App() {
         console.error("API request error", error);
       });
   };
+  console.log("TOKEN", accessToken);
   
   return (
     <div className='p-3 overflow-hidden'>

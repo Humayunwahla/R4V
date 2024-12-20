@@ -45,5 +45,4 @@ export const tableData = [
         template: "Smart Poodle",
         edit: "Edit",
     },
-
 ];

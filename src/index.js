@@ -7,7 +7,6 @@ import { UserProvider } from './context/UserContext/userContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
     <UserProvider>
       <div className='bg-gray-100'>
         <main>
@@ -15,7 +14,6 @@ root.render(
         </main>
       </div>
     </UserProvider>
-  </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function
