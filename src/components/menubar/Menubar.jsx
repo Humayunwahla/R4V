@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import arrow from '../../assets/icons/arrow.png';
 import { FaBars, FaTimes } from 'react-icons/fa';
@@ -79,9 +78,9 @@ function Menubar() {
               Wet Reads
             </button>
             <button
-              onClick={() => handleButtonClick('Chats', '/chats')}
+              onClick={() => handleButtonClick('chat', '/chat')}
               className={`border h-10 w-full rounded-full px-3 ${
-                selectedButton === 'Chats' ? 'bg-[#CBEA7B]' : ''
+                selectedButton === 'chat' ? 'bg-[#CBEA7B]' : ''
               }`}
             >
               Chats
@@ -128,9 +127,9 @@ function Menubar() {
           Wet Reads
         </button>
         <button
-          onClick={() => handleButtonClick('Chats', '/chats')}
+          onClick={() => handleButtonClick('chat', '/chat')}
           className={`border h-10 rounded-full px-3 ${
-            selectedButton === 'Chats' ? 'bg-[#CBEA7B]' : ''
+            selectedButton === 'chat' ? 'bg-[#CBEA7B]' : ''
           }`}
         >
           Chats

@@ -4,10 +4,30 @@ import Card from './Card';
 import RTE from '../RTE';
 import { useNavigate } from 'react-router-dom';
 import Footer from '../footer/Footer';
-import Draggable from 'react-draggable';
 import { tableData } from '../../constants/GeneralData';
 import Sidebar from './Sidebar';
 import TableSection from './Tablesection';
+import { DndContext, closestCenter } from '@dnd-kit/core';
+import { arrayMove, SortableContext, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
+import { useSensor, useSensors, PointerSensor, KeyboardSensor } from '@dnd-kit/core';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+
+function SortableRTE({ id, name, heightValue, defaultValue }) {
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    touchAction: 'none',
+  };
+
+  return (
+    <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
+      <RTE name={name} heightValue={heightValue} defaultValue={defaultValue} />
+    </div>
+  );
+}
 
 function Home() {
   const navigate = useNavigate();
@@ -20,7 +40,6 @@ function Home() {
   const [modality_type, setModality_Type] = useState(["CT Scan", "MRI Scan", "Ultrasound Scan"]);
   const [study_type, setStudy_Type] = useState(["Chestnut Robin", "Golden Paws Retriever", "Siamese Claws Cat"]);
   const [user_Id, setUser_Id] = useState(["Ahmad123", "humayun21", "kashan123"]);
-
 
   const [template, setTemplate] = useState({
     template_id: '',
@@ -112,6 +131,26 @@ function Home() {
     console.log('Edit button clicked');
   }
 
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  const handleDragEnd = (event) => {
+    const { active, over } = event;
+
+    if (active.id !== over.id) {
+      setVisibleRTE((items) => {
+        const oldIndex = items.indexOf(active.id);
+        const newIndex = items.indexOf(over.id);
+
+        return arrayMove(items, oldIndex, newIndex);
+      });
+    }
+  };
+
   return (
     <div className='overflow-hidden z-50'>
       <div className='flex gap-3'>
@@ -171,27 +210,38 @@ function Home() {
         <div className='flex flex-col lg:flex-row mt-6 gap-1'>
           {/**Editor section */}
           <div className='lg:w-4/6'>
-            {visibleRTE.includes(0) && (
-              <Draggable bounds="parent">
-                <div>
-                  <RTE name="editor" heightValue={400} defaultValue="Initial content for Card 1" />
-                </div>
-              </Draggable>
-            )}
-            {visibleRTE.includes(1) && (
-              <Draggable bounds="parent">
-                <div>
-                  <RTE name="editor" heightValue={400} defaultValue="Initial content for Card 2" />
-                </div>
-              </Draggable>
-            )}
-            {visibleRTE.includes(2) && (
-              <Draggable bounds="parent">
-                <div>
-                  <RTE name="editor" heightValue={400} defaultValue="Initial content for Card 3" />
-                </div>
-              </Draggable>
-            )}
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleDragEnd}
+            >
+              <SortableContext items={visibleRTE}>
+                {visibleRTE.includes(0) && (
+                  <SortableRTE
+                    id={0}
+                    name="editor1"
+                    heightValue={400}
+                    defaultValue="Initial content for Card 1"
+                  />
+                )}
+                {visibleRTE.includes(1) && (
+                  <SortableRTE
+                    id={1}
+                    name="editor2"
+                    heightValue={400}
+                    defaultValue="Initial content for Card 2"
+                  />
+                )}
+                {visibleRTE.includes(2) && (
+                  <SortableRTE
+                    id={2}
+                    name="editor3"
+                    heightValue={400}
+                    defaultValue="Initial content for Card 3"
+                  />
+                )}
+              </SortableContext>
+            </DndContext>
           </div>
 
           {/**Side bar section */}
@@ -216,4 +266,4 @@ function Home() {
   )
 }
 
-export default Home
+export default Home;

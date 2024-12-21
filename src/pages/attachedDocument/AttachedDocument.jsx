@@ -5,10 +5,12 @@ import pdfimage from '../../assets/icons/pdfimage.png';
 import pdficon from '../../assets/icons/pdficon.png';
 import { FiDownload } from "react-icons/fi";
 import pdf from '../../assets/pdf/Ev_Charging_Station_Finder.pdf';
+import { Worker } from '@react-pdf-viewer/core';
+import { Viewer } from '@react-pdf-viewer/core';
+import '@react-pdf-viewer/core/lib/styles/index.css';
 
-
-// Set workerSrc to a valid CDN or local path
-pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js`;
+// // Set workerSrc to a valid CDN or local path
+// pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js`;
 
 function AttachedDocument() {
     const [selectedPdf, setSelectedPdf] = useState(null);
@@ -18,7 +20,7 @@ function AttachedDocument() {
     const pdfFiles = [
         { id: 1, name: 'Ev_Charging_Station_Finder.pdf', file: require('../../assets/pdf/Ev_Charging_Station_Finder.pdf') },
     ];
-    
+
 
     const handlePdfClick = (pdf) => {
         setSelectedPdf(pdf);
@@ -35,7 +37,7 @@ function AttachedDocument() {
     };
 
     return (
-        <div>
+        <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
             <div className="mt-6">
                 <div className="flex flex-col xl:flex-row">
                     <div className="xl:w-1/2 p-4 bg-white border xl:rounded-tl-3xl xl:rounded-bl-3xl overflow-scroll">
@@ -67,21 +69,7 @@ function AttachedDocument() {
                         {selectedPdf ? (
                             <div className="flex flex-col items-center h-screen overflow-y-auto p-4">
                                 {error && <p className="text-red-500">{error}</p>}
-                                <Document
-                                    file={selectedPdf.file}
-                                    onLoadSuccess={onDocumentLoadSuccess}
-                                    onLoadError={onDocumentLoadError}
-                                >
-                                    {Array.from(new Array(numPages), (_, index) => (
-                                        <Page
-                                            key={`page_${index + 1}`}
-                                            pageNumber={index + 1}
-                                            renderTextLayer={false}
-                                            renderAnnotationLayer={false}
-                                            className="shadow-lg mb-4"
-                                        />
-                                    ))}
-                                </Document>
+                                <Viewer fileUrl={selectedPdf.file} />
                             </div>
                         ) : (
                             <p className="text-center">Please select a PDF file to view its preview.</p>
@@ -90,7 +78,7 @@ function AttachedDocument() {
                 </div>
             </div>
             <Footer />
-        </div>
+        </Worker>
     );
 }
 

@@ -11,6 +11,8 @@ import Header from './components/Header';
 import axios from 'axios';
 import { UserContext } from './context/UserContext/userContext';
 import Message from './components/Message/Message';
+import Test from './components/Test';
+import Chat from './pages/chat/Chat';
 function App() {
   const { accessToken, isAuthenticated, handleLogin } = useContext(UserContext);
   const getDataFromApi = () => {
@@ -58,6 +60,8 @@ function App() {
                 <Route path="/criticalfindings" element={<CriticalFinding />} />
                 <Route path="/wetreads" element={<WetReads />} />
                 <Route path="/attacheddocument" element={<AttachedDocument />} />
+                <Route path="/chat" element={<Chat />} />
+                <Route path="/test" element={<Test />} />
               </Route>
             </Routes>
           </Router>
@@ -68,6 +72,7 @@ function App() {
     </div>
   );
 }
+// render(<App />, document.getElementById('root'));
 export default App;
 
 
