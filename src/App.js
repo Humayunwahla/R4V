@@ -41,7 +41,7 @@ function App() {
         console.error("API request error", error);
       });
   };
-  console.log("TOKEN", accessToken);
+  // console.log("TOKEN", accessToken);
   
   return (
     <div className='p-3 overflow-hidden'>

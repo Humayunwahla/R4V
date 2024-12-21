@@ -1,22 +1,21 @@
-// API_SERVICE.js
 import axios from "axios";
 
 const API_BASE_URL = "https://devvetsapimanagement.azure-api.net/ReportingMicroservice/api";
 
-// Function to create axios instance
 const createAxiosInstance = (accessToken) => {
   return axios.create({
     baseURL: API_BASE_URL,
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${accessToken}`,
+      'Authorization': `Bearer ${accessToken}`, // Corrected
     },
   });
 };
 
 export const getCatalog = async (catalogType, accessToken) => {
-  const axiosInstance = createAxiosInstance(accessToken);  // Pass accessToken as argument
-  const endpoint = `/Catalog/GetCatalog`;
+  const axiosInstance = createAxiosInstance(accessToken);
+  const endpoint = '/Catalog/GetCatalog'; // Corrected
+
   const payload = { catalogType };
 
   try {
@@ -29,8 +28,8 @@ export const getCatalog = async (catalogType, accessToken) => {
 };
 
 export const createTemplate = async (templateData, accessToken) => {
-  const axiosInstance = createAxiosInstance(accessToken);  // Pass accessToken as argument
-  const endpoint = `/Report/CreateTemplate`;
+  const axiosInstance = createAxiosInstance(accessToken);
+  const endpoint = '/Report/CreateTemplate'; // Corrected
 
   try {
     const response = await axiosInstance.post(endpoint, templateData);
