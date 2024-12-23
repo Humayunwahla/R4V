@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import { DndContext, closestCenter } from '@dnd-kit/core';
+import { DndContext, closestCenter, useSensor, useSensors, PointerSensor, KeyboardSensor } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
-import { useSensor, useSensors, PointerSensor, KeyboardSensor } from '@dnd-kit/core';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import plus from '../../assets/icons/plus.png';
 import copy from '../../assets/icons/copy.png';
 import dots from '../../assets/icons/dots.png';
 import dropdown from '../../assets/icons/dropdown.png';
+
 function DraggableSection({ id, children }) {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
   const style = {
@@ -21,6 +21,7 @@ function DraggableSection({ id, children }) {
     </div>
   );
 }
+
 const Sidebar = ({
   name,
   setName,
@@ -36,6 +37,8 @@ const Sidebar = ({
   template,
 }) => {
   const [sections, setSections] = useState(['addTemplate', 'addField', 'addInformation']);
+  const [draggingEnabled, setDraggingEnabled] = useState(true);
+
   const renderDropdown = (label, value, options, onChange) => (
     <div className="w-full h-12 p-3 rounded-full mt-3">
       <select
@@ -50,12 +53,18 @@ const Sidebar = ({
       </select>
     </div>
   );
+
   const sensors = useSensors(
-    useSensor(PointerSensor),
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: draggingEnabled ? 5 : Infinity, // Disable dragging when not enabled
+      },
+    }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })
   );
+
   const handleDragEnd = (event) => {
     const { active, over } = event;
     if (active.id !== over.id) {
@@ -66,6 +75,10 @@ const Sidebar = ({
       });
     }
   };
+
+  const handleFocus = () => setDraggingEnabled(false);
+  const handleBlur = () => setDraggingEnabled(true);
+
   return (
     <DndContext
       sensors={sensors}
@@ -73,7 +86,7 @@ const Sidebar = ({
       onDragEnd={handleDragEnd}
     >
       <SortableContext items={sections}>
-        <div className=" space-y-1">
+        <div className="space-y-1">
           {sections.map((section) => {
             if (section === 'addTemplate') {
               return (
@@ -87,6 +100,8 @@ const Sidebar = ({
                           setName(e.target.value);
                           updateTemplate('name', name);
                         }}
+                        onFocus={handleFocus}
+                        onBlur={handleBlur}
                         required
                         placeholder="Add new template"
                         className="border font-poppins rounded-full w-5/6 sm:w-11/12 lg:w-60 xl:w-80 px-2"
@@ -103,6 +118,8 @@ const Sidebar = ({
                           setMacro(e.target.value);
                           updateMacros(macro);
                         }}
+                        onFocus={handleFocus}
+                        onBlur={handleBlur}
                         required
                         placeholder="Add Macro"
                         className="border rounded-full font-poppins w-5/6 sm:w-11/12 lg:w-60 xl:w-80 px-2"
@@ -178,4 +195,5 @@ const Sidebar = ({
     </DndContext>
   );
 };
+
 export default Sidebar;
