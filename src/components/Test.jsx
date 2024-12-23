@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { createTemplate } from '../utils/API_SERVICE';
+import { createTemplate, getCatalog, isTemplateExists } from '../utils/API_SERVICE';
 import { useAuth } from '../Hooks/useAuth';
 
 const Test = () => {
@@ -8,14 +8,16 @@ const Test = () => {
   const accessToken = useAuth();
 
   const query = {
-    TemplateName: "Sample2",
-    Content: "content 2",
-    SpeciesId: 1,
-    ModalityTypeId: 2,
-    StudyTypeId: "a3f5d5f1-3a89-4c8b-8e91-0b28b6d6d1e3",
-    Description: "This is a sample template description for demonstration purposes.",
-    IsActive: true,
-  };
+    "TemplateName": "TestTemplate1",
+    "Content": "This is a test content for the API.",
+    "SpeciesId": 1,
+    "ModalityTypeId": 2,
+    "StudyTypeId": "a3f5d5f1-3a89-4c8b-8e91-0b28b6d6d1e3",  // Ensure this is a valid GUID
+    "Description": "This is a sample template description for demonstration purposes.",
+    "IsActive": true
+  }
+
+  const template_name = "aaa"
 
   useEffect(() => {
     const fetchData = async () => {
@@ -23,7 +25,7 @@ const Test = () => {
         if (accessToken) {
           console.log("Access token available:", accessToken);
 
-          const result = await createTemplate(query, accessToken);
+          const result = await isTemplateExists(template_name, accessToken);
           console.log("Template creation result:", result);
 
           setData(result);

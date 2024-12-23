@@ -8,23 +8,19 @@ import plus from '../../assets/icons/plus.png';
 import copy from '../../assets/icons/copy.png';
 import dots from '../../assets/icons/dots.png';
 import dropdown from '../../assets/icons/dropdown.png';
-
 function DraggableSection({ id, children }) {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
-
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
     touchAction: 'none',
   };
-
   return (
     <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
       {children}
     </div>
   );
 }
-
 const Sidebar = ({
   name,
   setName,
@@ -40,7 +36,6 @@ const Sidebar = ({
   template,
 }) => {
   const [sections, setSections] = useState(['addTemplate', 'addField', 'addInformation']);
-
   const renderDropdown = (label, value, options, onChange) => (
     <div className="w-full h-12 p-3 rounded-full mt-3">
       <select
@@ -55,27 +50,22 @@ const Sidebar = ({
       </select>
     </div>
   );
-
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })
   );
-
   const handleDragEnd = (event) => {
     const { active, over } = event;
-
     if (active.id !== over.id) {
       setSections((items) => {
         const oldIndex = items.indexOf(active.id);
         const newIndex = items.indexOf(over.id);
-
         return arrayMove(items, oldIndex, newIndex);
       });
     }
   };
-
   return (
     <DndContext
       sensors={sensors}
@@ -83,7 +73,7 @@ const Sidebar = ({
       onDragEnd={handleDragEnd}
     >
       <SortableContext items={sections}>
-        <div className="lg:w-2/6 space-y-1">
+        <div className=" space-y-1">
           {sections.map((section) => {
             if (section === 'addTemplate') {
               return (
@@ -188,5 +178,4 @@ const Sidebar = ({
     </DndContext>
   );
 };
-
 export default Sidebar;
