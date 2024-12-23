@@ -48,6 +48,9 @@ export const getCatalog = async (catalogType, accessToken) => {
 export const createTemplate = async (templateData, accessToken) => {
   const axiosInstance = createAxiosInstance(accessToken);
   const endpoint = '/CreateTemplate';
+  // console.log("Template Data:", templateData);
+  // console.log("Access Token from api service:", accessToken);
+  
 
   try {
     const response = await axiosInstance.post(endpoint, templateData);
