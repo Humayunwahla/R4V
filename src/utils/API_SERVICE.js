@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE_URL = "https://devvetsapimanagement.azure-api.net/ReportingMicroservice/api/Report";
+const API_BASE_URL = "https://devvetsapimanagement.azure-api.net/ReportingMicroservice/api";
 
 // Create an Axios instance with the access token
 const createAxiosInstance = (accessToken) => {
@@ -47,7 +47,7 @@ export const getCatalog = async (catalogType, accessToken) => {
 // Create Template
 export const createTemplate = async (templateData, accessToken) => {
   const axiosInstance = createAxiosInstance(accessToken);
-  const endpoint = '/CreateTemplate';
+  const endpoint = '/Report/CreateTemplate';
   // console.log("Template Data:", templateData);
   // console.log("Access Token from api service:", accessToken);
   
@@ -74,7 +74,7 @@ export const createTemplate = async (templateData, accessToken) => {
 // Check if Template Exists
 export const isTemplateExists = async (templateName, accessToken) => {
   const axiosInstance = createAxiosInstance(accessToken);
-  const endpoint = '/IsTemplateExists';
+  const endpoint = '/Report/IsTemplateExists';
 
   try {
     const response = await axiosInstance.post(endpoint, { TemplateName: templateName });
@@ -98,7 +98,7 @@ export const isTemplateExists = async (templateName, accessToken) => {
 // Get Template
 export const getTemplate = async (templateId, accessToken) => {
   const axiosInstance = createAxiosInstance(accessToken);
-  const endpoint = '/GetTemplate';
+  const endpoint = '/Report/GetTemplate';
 
   try {
     const response = await axiosInstance.post(endpoint, templateId);

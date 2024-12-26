@@ -93,6 +93,8 @@ function Home() {
         StudyTypeId: 'a3f5d5f1-3a89-4c8b-8e91-0b28b6d6d1e3',
         Description: 'This is a sample template description for demonstration purposes.',
         IsActive: true,
+        Header: "header content",
+        Footer: "footer content",
       };
 
       const templateResponse = await createTemplate(templateData, accessToken);
