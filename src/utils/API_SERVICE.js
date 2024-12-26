@@ -101,7 +101,7 @@ export const getTemplate = async (templateId, accessToken) => {
   const endpoint = '/GetTemplate';
 
   try {
-    const response = await axiosInstance.post(endpoint, { TemplateId: templateId });
+    const response = await axiosInstance.post(endpoint, templateId);
     console.log("API Response Data:", response.data);
     return response.data;
   } catch (error) {

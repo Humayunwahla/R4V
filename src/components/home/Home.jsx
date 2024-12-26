@@ -1,17 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import arrow from '../../assets/icons/arrow.png';
 import Card from './Card';
 import RTE from '../RTE';
 import { useNavigate } from 'react-router-dom';
 import Footer from '../footer/Footer';
-import { tableData } from '../../constants/GeneralData';
 import Sidebar from './Sidebar';
 import TableSection from './Tablesection';
 import { DndContext, closestCenter, useSensor, useSensors, PointerSensor, KeyboardSensor } from '@dnd-kit/core';
 import { SortableContext, horizontalListSortingStrategy, arrayMove, useSortable, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { createMacro, createTemplate } from '../../utils/API_SERVICE';
+import { createMacro, createTemplate, getTemplate } from '../../utils/API_SERVICE';
 import { useAuth } from '../../Hooks/useAuth';
+import dots from '../../assets/icons/dots.png';
 
 function SortableItem(props) {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: props.id });
@@ -20,8 +20,8 @@ function SortableItem(props) {
     transition,
   };
   return (
-    <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
-      {props.children}
+    <div ref={setNodeRef} style={style} {...attributes}>
+      {props.children(listeners)}
     </div>
   );
 }
@@ -51,10 +51,11 @@ function Home() {
   const [headerContent, setHeaderContent] = useState("");
   const [bodyContent, setBodyContent] = useState("");
   const [footerContent, setFooterContent] = useState("");
+  const [templateData, setTemplateData] = useState([]); // Store multiple template data
+  const [templateId, setTemplateId] = useState(null); // State variable to store templateId
 
   const accessToken = useAuth();
 
-  console.log("TOKEN FROM HOME", accessToken);
   const updateTemplate = (key, value) => {
     setTemplate((prev) => ({
       ...prev,
@@ -82,7 +83,7 @@ function Home() {
       header: headerContent,
       body: bodyContent,
       footer: footerContent,
-    }
+    };
     try {
       const templateData = {
         TemplateName: template.add_information.name || 'Sample2',
@@ -94,10 +95,33 @@ function Home() {
         IsActive: true,
       };
 
-      console.log('Validated Template Data:', JSON.stringify(templateData, null, 2));
-
       const templateResponse = await createTemplate(templateData, accessToken);
       console.log('Template saved successfully!', templateResponse);
+
+      if (templateResponse?.payload?.templateId) {
+        const newTemplateId = templateResponse.payload.templateId;
+        setTemplateId(newTemplateId); // Store templateId in state
+        console.log('Template ID:', newTemplateId);
+
+        // Fetch the newly created template
+        const fetchedTemplate = await getTemplate({ TemplateId: newTemplateId }, accessToken);
+        if (fetchedTemplate && fetchedTemplate.payload) {
+          // Transform fetched template data to match the tableData structure
+          const transformedData = {
+            species: species[fetchedTemplate.payload.speciesId - 1],
+            modalityType: modality_type[fetchedTemplate.payload.modalityTypeId - 1],
+            studyType: study_type.find(type => type === fetchedTemplate.payload.studyTypeId) || fetchedTemplate.payload.studyTypeId,
+            userId: user_Id.find(id => id === fetchedTemplate.payload.createdBy) || fetchedTemplate.payload.createdBy,
+            macros: 'N/A', // Assuming macros are not part of the fetched template
+            template: fetchedTemplate.payload.templateName,
+          };
+          setTemplateData((prev) => [...prev, transformedData]); // Store transformed template data
+          console.log("Fetched Template Data:", fetchedTemplate);
+        } else {
+          console.error('Failed to fetch template data');
+        }
+      }
+
       alert('Template saved successfully!');
 
       if (template.add_information.macros && Object.keys(template.add_information.macros).length > 0) {
@@ -121,7 +145,6 @@ function Home() {
       }
     });
     setSelectedCard((prev) => (prev === index ? null : index));
-    console.log(selectedCard);
   };
 
   const handleRadioChange = (index) => {
@@ -166,6 +189,9 @@ function Home() {
       coordinateGetter: sortableKeyboardCoordinates,
     })
   );
+
+  // Log template data to debug
+  console.log('Template Data:', templateData);
 
   return (
     <div className='overflow-hidden z-50'>
@@ -214,7 +240,7 @@ function Home() {
       </div>
       {/** Table section */}
       <TableSection
-        tableData={tableData}
+        tableData={templateData} // Pass the fetched templates data
         handleRowClick={handleRowClick}
         handleEditClick={handleEditClick}
         handleCardClick={handleCardClick}
@@ -226,69 +252,78 @@ function Home() {
             {items.map((id) => {
               if (id === 'editor') {
                 return (
-                  <div className='lg:w-4/6'>
-                    <SortableItem key={id} id={id}>
-                      <div className=''>
-                        {visibleRTE.includes(0) && (
-                          <div>
-                            <RTE
-                              name="editor"
-                              heightValue={400}
-                              defaultValue="Initial content for Card 1"
-                              onFocus={handleFocus}
-                              onBlur={handleBlur}
-                              onChange={setHeaderContent} // Capture header content
-                            />
-                          </div>
-                        )}
-                        {visibleRTE.includes(1) && (
-                          <div>
-                            <RTE
-                              name="editor"
-                              heightValue={400}
-                              defaultValue="Initial content for Card 2"
-                              onFocus={handleFocus}
-                              onBlur={handleBlur}
-                              onChange={setBodyContent} // Capture body content
-                            />
-                          </div>
-                        )}
-                        {visibleRTE.includes(2) && (
-                          <div>
-                            <RTE
-                              name="editor"
-                              heightValue={400}
-                              defaultValue="Initial content for Card 3"
-                              onFocus={handleFocus}
-                              onBlur={handleBlur}
-                              onChange={setFooterContent} // Capture footer content
-                            />
-                          </div>
-                        )}
-                      </div>
+                  <div className='lg:w-4/6' key={id}>
+                    <SortableItem id={id}>
+                      {(listeners) => (
+                        <div className=''>
+                          {visibleRTE.includes(0) && (
+                            <div className='relative'>
+                              <div className="drag-handle bg-[#CBEA7B] w-8 h-8 rounded-full flex justify-center items-center absolute z-50 right-0 top-0 mt-1 mr-1" {...listeners}>
+                                <img src={dots} alt="" className="w-1 h-4" />
+                              </div>
+                              <div>
+                                <RTE
+                                  name="editor"
+                                  heightValue={400}
+                                  defaultValue="Initial content for Card 1"
+                                  onFocus={handleFocus}
+                                  onBlur={handleBlur}
+                                  onChange={setHeaderContent}
+                                />
+                              </div>
+                            </div>
+                          )}
+                          {visibleRTE.includes(1) && (
+                            <div>
+                              <RTE
+                                name="editor"
+                                heightValue={400}
+                                defaultValue="Initial content for Card 2"
+                                onFocus={handleFocus}
+                                onBlur={handleBlur}
+                                onChange={setBodyContent}
+                              />
+                            </div>
+                          )}
+                          {visibleRTE.includes(2) && (
+                            <div>
+                              <RTE
+                                name="editor"
+                                heightValue={400}
+                                defaultValue="Initial content for Card 3"
+                                onFocus={handleFocus}
+                                onBlur={handleBlur}
+                                onChange={setFooterContent}
+                              />
+                            </div>
+                          )}
+                        </div>
+                      )}
                     </SortableItem>
                   </div>
                 );
               } else if (id === 'sidebar') {
                 return (
-                  <div className='lg:w-2/6'>
-                    <SortableItem key={id} id={id}>
-                      <div >
-                        <Sidebar
-                          name={name}
-                          setName={setName}
-                          macro={macro}
-                          setMacro={setMacro}
-                          saveTemplate={saveTemplate}
-                          updateTemplate={updateTemplate}
-                          updateMacros={updateMacros}
-                          species={species}
-                          modality_type={modality_type}
-                          study_type={study_type}
-                          user_Id={user_Id}
-                          template={template}
-                        />
-                      </div>
+                  <div className='lg:w-2/6' key={id}>
+                    <SortableItem id={id}>
+                      {(listeners) => (
+                        <div>
+                          <Sidebar
+                            name={name}
+                            setName={setName}
+                            macro={macro}
+                            setMacro={setMacro}
+                            saveTemplate={saveTemplate}
+                            updateTemplate={updateTemplate}
+                            updateMacros={updateMacros}
+                            species={species}
+                            modality_type={modality_type}
+                            study_type={study_type}
+                            user_Id={user_Id}
+                            template={template}
+                          />
+                        </div>
+                      )}
                     </SortableItem>
                   </div>
                 );

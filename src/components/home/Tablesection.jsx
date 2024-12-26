@@ -1,7 +1,8 @@
 import React from 'react';
 import filter from '../../assets/icons/filter.png';
 
-const TableSection = ({ tableData, handleRowClick, handleEditClick, handleCardClick }) => {
+const TableSection = ({ tableData = [], handleRowClick, handleEditClick, handleCardClick }) => {
+  // console.log('Table Data:', tableData);
   return (
     <div className="mt-8 overflow-scroll">
       <table className="table-auto border bg-white min-w-full text-left">

@@ -2,10 +2,8 @@ import React, { useState } from 'react';
 import 'react-quill/dist/quill.snow.css';
 import ReactQuill from 'react-quill';
 import Dots from '../assets/icons/dots.png';
-
 function RTE({ name, label, defaultValue = "", heightValue }) {
   const [value, setValue] = useState(defaultValue);
-
   const modules = {
     toolbar: [
       [{ 'font': [] }], // Font dropdown
@@ -25,12 +23,8 @@ function RTE({ name, label, defaultValue = "", heightValue }) {
       userOnly: true, // Tracks user edits only
     },
   };
-
   return (
     <div className='relative'>
-      <div className="drag-handle bg-[#CBEA7B] w-8 h-8 rounded-full flex justify-center items-center absolute z-50 right-0 top-0 mt-1 mr-1">
-        <img src={Dots} alt="" className="w-1 h-4" />
-      </div>
       {label && <label htmlFor={name} className="block text-sm font-medium text-gray-700">{label}</label>}
       <div className="mt-8 relative shadow-2xl rounded-lg overflow-hidden bg-white">
         <ReactQuill
@@ -43,5 +37,8 @@ function RTE({ name, label, defaultValue = "", heightValue }) {
     </div>
   );
 }
-
 export default RTE;
+
+
+
+
