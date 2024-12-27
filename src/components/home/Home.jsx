@@ -9,7 +9,7 @@ import TableSection from './Tablesection';
 import { DndContext, closestCenter, useSensor, useSensors, PointerSensor, KeyboardSensor } from '@dnd-kit/core';
 import { SortableContext, horizontalListSortingStrategy, arrayMove, useSortable, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { createMacro, createTemplate, getTemplate } from '../../utils/API_SERVICE';
+import { createMacro, createTemplate, getCatalog, getTemplate } from '../../utils/API_SERVICE';
 import { useAuth } from '../../Hooks/useAuth';
 import dots from '../../assets/icons/dots.png';
 
@@ -32,9 +32,9 @@ function Home() {
   const [visibleRTE, setVisibleRTE] = useState([]);
   const [name, setName] = useState("");
   const [macro, setMacro] = useState("");
-  const [species, setSpecies] = useState(["American Robin", "Golden Retriever", "Siamese Cat"]);
-  const [modality_type, setModality_Type] = useState(["CT Scan", "MRI Scan", "Ultrasound Scan"]);
-  const [study_type, setStudy_Type] = useState(["Chestnut Robin", "Golden Paws Retriever", "Siamese Claws Cat"]);
+  const [species, setSpecies] = useState([]);
+  const [modality_type, setModality_Type] = useState([]);
+  const [study_type, setStudy_Type] = useState([]);
   const [user_Id, setUser_Id] = useState(["Ahmad123", "humayun21", "kashan123", "cat321"]);
   const [items, setItems] = useState(['editor', 'sidebar']);
   const [template, setTemplate] = useState({
@@ -55,6 +55,67 @@ function Home() {
   const [templateId, setTemplateId] = useState(null); // State variable to store templateId
 
   const accessToken = useAuth();
+
+  // Fetch all templates on component mount
+  // Fetch dropdown data on component mount
+  useEffect(() => {
+
+    const fetchCatalogs = async () => {
+      try {
+        const speciesResponse = await getCatalog({ catalogType: 1 }, accessToken);
+        const modalityTypeResponse = await getCatalog({ catalogType: 2 }, accessToken);
+        const studyTypeResponse = await getCatalog({ catalogType: 3 }, accessToken);
+
+        if (speciesResponse.success) {
+          setSpecies(speciesResponse.payload.catalogItems.map(item => item.name));
+        }
+
+        if (modalityTypeResponse.success) {
+          setModality_Type(modalityTypeResponse.payload.catalogItems.map(item => item.name));
+        }
+
+        if (studyTypeResponse.success) {
+          setStudy_Type(studyTypeResponse.payload.catalogItems.map(item => item.name));
+        }
+      } catch (error) {
+        console.error('Error fetching catalog data:', error);
+      }
+    };
+
+    fetchCatalogs();
+
+    return () => {
+      // Perform any necessary cleanup here
+    };
+  }, [accessToken]);
+
+  const fetchTemplates = async () => {
+    try {
+      const fetchedTemplates = await getTemplate({}, accessToken);
+      if (fetchedTemplates && fetchedTemplates.payload) {
+        const transformedData = fetchedTemplates.payload.map(template => ({
+          species: species[template.speciesId - 1],
+          modalityType: modality_type[template.modalityTypeId - 1],
+          studyType: study_type.find(type => type === template.studyTypeId) || template.studyTypeId,
+          userId: user_Id.find(id => id === template.createdBy) || template.createdBy,
+          macros: 'N/A', // Assuming macros are not part of the fetched template
+          template: template.templateName,
+        }));
+        setTemplateData(transformedData);
+        console.log("Fetched Templates Data:", transformedData);
+      } else {
+        console.error('Failed to fetch templates data');
+      }
+    } catch (error) {
+      console.error('Error fetching templates:', error);
+    }
+  };
+
+  useEffect(() => {
+    if (species.length && modality_type.length && study_type.length) {
+      fetchTemplates();
+    }
+  }, [accessToken, species, modality_type, study_type, user_Id]);
 
   const updateTemplate = (key, value) => {
     setTemplate((prev) => ({
@@ -106,22 +167,7 @@ function Home() {
         console.log('Template ID:', newTemplateId);
 
         // Fetch the newly created template
-        const fetchedTemplate = await getTemplate({ TemplateId: newTemplateId }, accessToken);
-        if (fetchedTemplate && fetchedTemplate.payload) {
-          // Transform fetched template data to match the tableData structure
-          const transformedData = {
-            species: species[fetchedTemplate.payload.speciesId - 1],
-            modalityType: modality_type[fetchedTemplate.payload.modalityTypeId - 1],
-            studyType: study_type.find(type => type === fetchedTemplate.payload.studyTypeId) || fetchedTemplate.payload.studyTypeId,
-            userId: user_Id.find(id => id === fetchedTemplate.payload.createdBy) || fetchedTemplate.payload.createdBy,
-            macros: 'N/A', // Assuming macros are not part of the fetched template
-            template: fetchedTemplate.payload.templateName,
-          };
-          setTemplateData((prev) => [...prev, transformedData]); // Store transformed template data
-          console.log("Fetched Template Data:", fetchedTemplate);
-        } else {
-          console.error('Failed to fetch template data');
-        }
+        await fetchTemplates();
       }
 
       alert('Template saved successfully!');
@@ -191,9 +237,6 @@ function Home() {
       coordinateGetter: sortableKeyboardCoordinates,
     })
   );
-
-  // Log template data to debug
-  console.log('Template Data:', templateData);
 
   return (
     <div className='overflow-hidden z-50'>

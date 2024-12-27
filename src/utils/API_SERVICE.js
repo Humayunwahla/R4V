@@ -26,7 +26,7 @@ export const getCatalog = async (catalogType, accessToken) => {
   const endpoint = '/Catalog/GetCatalog';
 
   try {
-    const response = await axiosInstance.post(endpoint, { catalogType });
+    const response = await axiosInstance.post(endpoint, catalogType);
     console.log("API Response Data:", response.data);
     return response.data;
   } catch (error) {
@@ -98,7 +98,7 @@ export const isTemplateExists = async (templateName, accessToken) => {
 // Get Template
 export const getTemplate = async (templateId, accessToken) => {
   const axiosInstance = createAxiosInstance(accessToken);
-  const endpoint = '/Report/GetTemplate';
+  const endpoint = '/Report/GetTemplates';
 
   try {
     const response = await axiosInstance.post(endpoint, templateId);
