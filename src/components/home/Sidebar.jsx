@@ -7,6 +7,7 @@ import plus from '../../assets/icons/plus.png';
 import copy from '../../assets/icons/copy.png';
 import dots from '../../assets/icons/dots.png';
 import dropdown from '../../assets/icons/dropdown.png';
+import dot from '../../assets/icons/dot.png';
 
 function DraggableSection({ id, children }) {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
@@ -38,6 +39,7 @@ const Sidebar = ({
 }) => {
   const [sections, setSections] = useState(['addTemplate', 'addField', 'addInformation']);
   const [draggingEnabled, setDraggingEnabled] = useState(true);
+  const [macros, setMacros] = useState([]);
 
   const renderDropdown = (label, value, options, onChange) => (
     <div className="w-full h-12 p-3 rounded-full mt-3">
@@ -79,6 +81,13 @@ const Sidebar = ({
   const handleFocus = () => setDraggingEnabled(false);
   const handleBlur = () => setDraggingEnabled(true);
 
+  const addMacro = () => {
+    if (macro.trim()) {
+      setMacros([...macros, macro]);
+      setMacro('');
+    }
+  };
+
   return (
     <DndContext
       sensors={sensors}
@@ -98,7 +107,7 @@ const Sidebar = ({
                         value={name}
                         onChange={(e) => {
                           setName(e.target.value);
-                          updateTemplate('name', name);
+                          updateTemplate('name', e.target.value);
                         }}
                         onFocus={handleFocus}
                         onBlur={handleBlur}
@@ -116,7 +125,7 @@ const Sidebar = ({
                         value={macro}
                         onChange={(e) => {
                           setMacro(e.target.value);
-                          updateMacros(macro);
+                          updateMacros(e.target.value);
                         }}
                         onFocus={handleFocus}
                         onBlur={handleBlur}
@@ -124,9 +133,30 @@ const Sidebar = ({
                         placeholder="Add Macro"
                         className="border rounded-full font-poppins w-5/6 sm:w-11/12 lg:w-60 xl:w-80 px-2"
                       />
-                      <span className="bg-[#516EFF] w-12 h-12 flex justify-center items-center rounded-full">
+                      <span
+                        className="bg-[#516EFF] w-12 h-12 flex justify-center items-center rounded-full"
+                        onClick={addMacro}
+                      >
                         <img src={plus} alt="" className="w-3 h-3" />
                       </span>
+                    </div>
+                    <div>
+                      {macros.map((macro, index) => (
+                        <div key={index} className="flex justify-between border  my-2 bg-gray-300 place-content-center items-center h-auto p-3 rounded-2xl mt-3">
+                          <div className='w-8 h-8 place-content-center justify-items-center bg-black rounded-full'>
+                              <img src={dot} alt="" className='w-2 h-3' />
+                            </div>
+                          <div className='w-11/12'>
+                                                       <h1 className='macros-text'>{macro}</h1>
+                                                     </div>
+                          <button
+                            className="text-red-500"
+                            onClick={() => setMacros(macros.filter((_, i) => i !== index))}
+                          >
+                            &times;
+                          </button>
+                        </div>
+                      ))}
                     </div>
                     <button
                       onClick={saveTemplate}
@@ -165,7 +195,7 @@ const Sidebar = ({
             } else if (section === 'addInformation') {
               return (
                 <DraggableSection key={section} id={section}>
-                  <div className="p-3 bg-white rounded-2xl font-poppins ">
+                  <div className="p-3 bg-white rounded-2xl font-poppins">
                     <div className="flex gap-2 justify-between">
                       <div className="flex gap-3">
                         <div className="w-11 h-11 bg-gray-200  rounded-full flex justify-center items-center">

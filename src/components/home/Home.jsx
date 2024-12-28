@@ -250,7 +250,7 @@ function Home() {
       <div className="grid md:grid-cols-2 lg:grid-cols-4 mt-4 gap-3">
         <div onClick={() => handleCardClick(0)}>
           <Card
-            heading="Header"
+            heading="Macro"
             paragraph="This is a sample paragraph."
             className=""
             radioValue={visibleRTE.includes(0)}
@@ -259,7 +259,7 @@ function Home() {
         </div>
         <div onClick={() => handleCardClick(1)}>
           <Card
-            heading="Body"
+            heading="Template Content"
             paragraph="Another description for this card."
             className=""
             radioValue={visibleRTE.includes(1)}
@@ -268,7 +268,7 @@ function Home() {
         </div>
         <div onClick={() => handleCardClick(2)}>
           <Card
-            heading="Footer"
+            heading="Template Header"
             paragraph="Another description for this card."
             className=""
             radioValue={visibleRTE.includes(2)}
@@ -277,7 +277,7 @@ function Home() {
         </div>
         <div onClick={() => handleCardClick(3)}>
           <Card
-            heading="Macros"
+            heading="Template Footer"
             paragraph="Another description for this card."
             className=""
           />
