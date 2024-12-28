@@ -44,7 +44,7 @@ function StudyDetails() {
               </select>
             </div>
             <div className='flex flex-col '>
-              <label htmlFor="">Study type</label>
+              <label htmlFor="">Modality type</label>
               <select
                 id="study-type"
                 className="w-auto border p-3 rounded-full mt-2"
@@ -61,7 +61,7 @@ function StudyDetails() {
               </select>
             </div>
             <div className='flex flex-col '>
-              <label htmlFor="">Study type</label>
+              <label htmlFor="">Anatomic Regions</label>
               <select
                 id="study-type"
                 className="w-auto border p-3 rounded-full mt-2"

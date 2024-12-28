@@ -100,7 +100,7 @@ function WetReads() {
           </div>
         </div>
         <div className='flex flex-col bg-gray-200 border rounded-3xl p-6 mt-2'>
-              <label htmlFor="">Study type</label>
+              <label htmlFor="">Wet reads</label>
               <select
                 id="study-type"
                 className="sm:w-96 w-full border p-3 rounded-full mt-3 "
