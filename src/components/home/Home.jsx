@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 import arrow from '../../assets/icons/arrow.png';
 import Card from './Card';
 import RTE from '../RTE';
@@ -28,6 +30,7 @@ function SortableItem(props) {
 
 function Home() {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true); // Add loading state
   const [selectedCard, setSelectedCard] = useState(null);
   const [visibleRTE, setVisibleRTE] = useState([]);
   const [name, setName] = useState("");
@@ -94,6 +97,7 @@ function Home() {
   }, [accessToken]);
 
   const fetchTemplates = async () => {
+    setLoading(true); // Set loading state to true before fetching templates
     try {
       const fetchedTemplates = await getTemplate({}, accessToken);
       if (fetchedTemplates && fetchedTemplates.payload) {
@@ -130,6 +134,8 @@ function Home() {
       }
     } catch (error) {
       console.error('Error fetching templates:', error);
+    } finally {
+      setLoading(false); // Set loading state to false after fetching templates
     }
   };
 
@@ -274,9 +280,6 @@ function Home() {
     })
   );
 
-  // console.log("templateData", templateData);
-  
-
   return (
     <div className='overflow-hidden z-50'>
       <div className='flex gap-3'>
@@ -328,6 +331,7 @@ function Home() {
         handleRowClick={handleRowClick}
         handleEditClick={handleEditClick}
         handleCardClick={handleCardClick}
+        loading={loading} // Pass the loading state to TableSection
       />
       {/* Add draggable content here */}
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
