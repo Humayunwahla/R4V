@@ -1,18 +1,25 @@
 import React, { useEffect, useState } from 'react';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 import filter from '../../assets/icons/filter.png';
-import { getTemplate } from '../../utils/API_SERVICE'
+import { getTemplate } from '../../utils/API_SERVICE';
 import { useAuth } from '../../Hooks/useAuth';
 
 const TableSection = ({ tableData = [], handleRowClick, handleEditClick, handleCardClick }) => {
-  // console.log("table data", tableData)
-  const accessToken = useAuth()
+  const accessToken = useAuth();
   const [currentPage, setCurrentPage] = useState(1);
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' }); // State for sorting configuration
+  const [loading, setLoading] = useState(true); // Add loading state
   const rowsPerPage = 5;
 
-
-
   const totalPages = Math.ceil(tableData.length / rowsPerPage);
+
+  useEffect(() => {
+    // Simulate data fetching
+    setTimeout(() => {
+      setLoading(false); // Set loading to false after data is fetched
+    }, 2000);
+  }, []);
 
   const handleNextPage = () => {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
@@ -71,33 +78,48 @@ const TableSection = ({ tableData = [], handleRowClick, handleEditClick, handleC
           </tr>
         </thead>
         <tbody className="text-xs">
-          {currentData.map((row, index) => (
-            <tr
-              key={index}
-              className="cursor-pointer hover:bg-gray-100"
-              onClick={handleRowClick}
-            >
-              <td className="border border-gray-300 px-4 py-2 font-dmSans">{row.species}</td>
-              <td className="border border-gray-300 px-4 py-2 font-dmSans">{row.modalityType}</td>
-              <td className="border border-gray-300 px-4 py-2 font-dmSans">{row.studyType}</td>
-              <td className="border border-gray-300 px-4 py-2 font-dmSans">{row.userId}</td>
-              <td className="border border-gray-300 px-4 py-2 font-dmSans">{row.macros}</td>
-              <td className="border border-gray-300 px-4 py-2 font-dmSans">{row.template}</td>
-              <td className="border border-gray-300 px-4 py-2 font-dmSans">
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleEditClick(row);
-                    handleCardClick(0);
-                    handleCardClick(1);
-                    handleCardClick(2);
-                  }}
-                >
-                  Edit
-                </button>
-              </td>
-            </tr>
-          ))}
+          {loading ? (
+            // Display skeleton loaders for table rows
+            [...Array(rowsPerPage)].map((_, index) => (
+              <tr key={index}>
+                {[...Array(7)].map((_, i) => (
+                  <td key={i} className="border border-gray-300 px-4 py-2">
+                    <Skeleton height={20} />
+                  </td>
+                ))}
+              </tr>
+            ))
+          ) : (
+            currentData.map((row, index) => (
+              <tr
+                key={index}
+                className="cursor-pointer hover:bg-gray-100"
+                onClick={handleRowClick}
+              >
+                <td className="border border-gray-300 px-4 py-2 font-dmSans">{row.species}</td>
+                <td className="border border-gray-300 px-4 py-2 font-dmSans">{row.modalityType}</td>
+                <td className="border border-gray-300 px-4 py-2 font-dmSans">{row.studyType}</td>
+                <td className="border border-gray-300 px-4 py-2 font-dmSans">{row.userId}</td>
+                <td className="border border-gray-300 px-4 py-2 font-dmSans">{row.macros}</td>
+                <td className="border border-gray-300 px-4 py-2 font-dmSans">{row.template}</td>
+                <td
+                 onClick={(e) => {
+                  e.stopPropagation();
+                  handleEditClick(row);
+                  handleCardClick(0);
+                  handleCardClick(1);
+                  handleCardClick(2);
+                }}
+                 className="border border-gray-300 px-4 py-2 font-dmSans">
+                  <button
+                   
+                  >
+                    Edit
+                  </button>
+                </td>
+              </tr>
+            ))
+          )}
         </tbody>
       </table>
 
