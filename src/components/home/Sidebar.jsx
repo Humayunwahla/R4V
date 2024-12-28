@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 import { DndContext, closestCenter, useSensor, useSensors, PointerSensor, KeyboardSensor } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import { useSortable } from '@dnd-kit/sortable';
@@ -40,6 +42,14 @@ const Sidebar = ({
   const [sections, setSections] = useState(['addTemplate', 'addField', 'addInformation']);
   const [draggingEnabled, setDraggingEnabled] = useState(true);
   const [macros, setMacros] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulate data fetching
+    setTimeout(() => {
+      setLoading(false); // Set loading to false after data is fetched
+    }, 2000);
+  }, []);
 
   const renderDropdown = (label, value, options, onChange) => (
     <div className="w-full h-12 p-3 rounded-full mt-3">
@@ -111,6 +121,14 @@ const Sidebar = ({
               return (
                 <DraggableSection key={section} id={section}>
                   <div className="bg-white p-6 space-y-3 rounded-2xl">
+                  {loading ? (
+                      <>
+                        <Skeleton height={40} />
+                        <Skeleton height={40} />
+                        <Skeleton height={40} />
+                      </>
+                    ) : (
+                      <>
                     <div className="flex gap-2 justify-between">
                       <input
                         type="text"
@@ -171,6 +189,8 @@ const Sidebar = ({
                     >
                       Save
                     </button>
+                    </>
+                    )}
                   </div>
                 </DraggableSection>
               );
@@ -178,6 +198,9 @@ const Sidebar = ({
               return (
                 <DraggableSection key={section} id={section}>
                   <div className="bg-white rounded-2xl p-3">
+                  {loading ? (
+                      <Skeleton height={150} />
+                    ) : (
                     <div className="flex gap-2 justify-between">
                       <div className="flex gap-2">
                         <div className="w-11 h-11 bg-gray-200 rounded-full flex justify-center items-center">
@@ -192,6 +215,7 @@ const Sidebar = ({
                         <img src={dots} alt="" className="w-1 h-4" />
                       </div>
                     </div>
+                    )}
                   </div>
                 </DraggableSection>
               );
@@ -199,6 +223,10 @@ const Sidebar = ({
               return (
                 <DraggableSection key={section} id={section}>
                   <div className="p-3 bg-white rounded-2xl font-poppins">
+                  {loading ? (
+                      <Skeleton height={150} />
+                    ) : (
+                      <>
                     <div className="flex gap-2 justify-between">
                       <div className="flex gap-3">
                         <div className="w-11 h-11 bg-gray-200 rounded-full flex justify-center items-center">
@@ -221,6 +249,8 @@ const Sidebar = ({
                       console.log("selectedStudyType", selectedStudyType);
                     })}
                     {renderDropdown('User ID', template.add_information.user_id, user_Id, (e) => updateTemplate('user_id', e.target.value))}
+                    </>
+                  )}
                   </div>
                 </DraggableSection>
               );
