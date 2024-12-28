@@ -49,8 +49,10 @@ const Sidebar = ({
         onChange={onChange}
       >
         <option value="" disabled>{`Select ${label}`}</option>
-        {options.map((item, index) => (
-          <option value={item} key={index}>{item}</option>
+        {options.map((item) => (
+          <option value={item.study_type_id || item} key={item.study_type_id || item}>
+            {item.name || item}
+          </option>
         ))}
       </select>
     </div>
@@ -83,9 +85,17 @@ const Sidebar = ({
 
   const addMacro = () => {
     if (macro.trim()) {
-      setMacros([...macros, macro]);
+      const newMacros = [...macros, macro.trim()];
+      setMacros(newMacros);
       setMacro('');
+      updateMacros(newMacros); // Update the template macros
     }
+  };
+
+  const removeMacro = (index) => {
+    const newMacros = macros.filter((_, i) => i !== index);
+    setMacros(newMacros);
+    updateMacros(newMacros); // Update the template macros
   };
 
   return (
@@ -123,10 +133,7 @@ const Sidebar = ({
                       <input
                         type="text"
                         value={macro}
-                        onChange={(e) => {
-                          setMacro(e.target.value);
-                          updateMacros(e.target.value);
-                        }}
+                        onChange={(e) => setMacro(e.target.value)}
                         onFocus={handleFocus}
                         onBlur={handleBlur}
                         required
@@ -142,16 +149,16 @@ const Sidebar = ({
                     </div>
                     <div>
                       {macros.map((macro, index) => (
-                        <div key={index} className="flex justify-between border  my-2 bg-gray-300 place-content-center items-center h-auto p-3 rounded-2xl mt-3">
+                        <div key={index} className="flex justify-between border my-2 bg-gray-300 place-content-center items-center h-auto p-3 rounded-2xl mt-3">
                           <div className='w-8 h-8 place-content-center justify-items-center bg-black rounded-full'>
-                              <img src={dot} alt="" className='w-2 h-3' />
-                            </div>
+                            <img src={dot} alt="" className='w-2 h-3' />
+                          </div>
                           <div className='w-11/12'>
-                                                       <h1 className='macros-text'>{macro}</h1>
-                                                     </div>
+                            <h1 className='macros-text'>{macro}</h1>
+                          </div>
                           <button
                             className="text-red-500"
-                            onClick={() => setMacros(macros.filter((_, i) => i !== index))}
+                            onClick={() => removeMacro(index)}
                           >
                             &times;
                           </button>
@@ -185,10 +192,6 @@ const Sidebar = ({
                         <img src={dots} alt="" className="w-1 h-4" />
                       </div>
                     </div>
-                    <div className="w-full bg-gray-300 flex justify-between items-center h-12 p-3 rounded-full mt-3">
-                      <h1 className="font-normal">Study type</h1>
-                      <img src={dropdown} alt="" className="w-3 h-2" />
-                    </div>
                   </div>
                 </DraggableSection>
               );
@@ -198,7 +201,7 @@ const Sidebar = ({
                   <div className="p-3 bg-white rounded-2xl font-poppins">
                     <div className="flex gap-2 justify-between">
                       <div className="flex gap-3">
-                        <div className="w-11 h-11 bg-gray-200  rounded-full flex justify-center items-center">
+                        <div className="w-11 h-11 bg-gray-200 rounded-full flex justify-center items-center">
                           <img src={copy} alt="" className="w-5 h-5" />
                         </div>
                         <div className="text-xs">
@@ -212,7 +215,11 @@ const Sidebar = ({
                     </div>
                     {renderDropdown('Species', template.add_information.species, species, (e) => updateTemplate('species', e.target.value))}
                     {renderDropdown('Modality Type', template.add_information.modality_type, modality_type, (e) => updateTemplate('modality_type', e.target.value))}
-                    {renderDropdown('Study Type', template.add_information.study_type, study_type, (e) => updateTemplate('study_type', e.target.value))}
+                    {renderDropdown('Study Type', template.add_information.study_type?.study_type_id || '', study_type, (e) => {
+                      const selectedStudyType = study_type.find(st => st.study_type_id === e.target.value);
+                      updateTemplate('study_type', selectedStudyType);
+                      console.log("selectedStudyType", selectedStudyType);
+                    })}
                     {renderDropdown('User ID', template.add_information.user_id, user_Id, (e) => updateTemplate('user_id', e.target.value))}
                   </div>
                 </DraggableSection>

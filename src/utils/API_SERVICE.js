@@ -122,7 +122,7 @@ export const getTemplate = async (templateId, accessToken) => {
 // Delete Template
 export const deleteTemplate = async (templateId, accessToken) => {
   const axiosInstance = createAxiosInstance(accessToken);
-  const endpoint = '/DeleteTemplate';
+  const endpoint = '/Report/DeleteTemplate';
 
   try {
     const response = await axiosInstance.post(endpoint, { TemplateId: templateId });
@@ -146,7 +146,7 @@ export const deleteTemplate = async (templateId, accessToken) => {
 // Create Macro
 export const createMacro = async (macroData, accessToken) => {
   const axiosInstance = createAxiosInstance(accessToken);
-  const endpoint = '/CreateMacro';
+  const endpoint = '/Report/CreateMacro';
 
   try {
     const response = await axiosInstance.post(endpoint, macroData);
@@ -170,7 +170,7 @@ export const createMacro = async (macroData, accessToken) => {
 // Check if Macro Exists
 export const isMacroExists = async (macroName, accessToken) => {
   const axiosInstance = createAxiosInstance(accessToken);
-  const endpoint = '/IsMacroExists';
+  const endpoint = '/Report/IsMacroExists';
 
   try {
     const response = await axiosInstance.post(endpoint, { MacroName: macroName });
@@ -192,12 +192,12 @@ export const isMacroExists = async (macroName, accessToken) => {
 };
 
 // Get Macro
-export const getMacro = async (macroName, accessToken) => {
+export const getMacro = async (macroId, accessToken) => {
   const axiosInstance = createAxiosInstance(accessToken);
-  const endpoint = '/GetMacros';
+  const endpoint = '/Report/GetMacros';
 
   try {
-    const response = await axiosInstance.post(endpoint, { MacroName: macroName });
+    const response = await axiosInstance.post(endpoint, macroId);
     console.log("API Response Data:", response.data);
     return response.data;
   } catch (error) {
@@ -218,7 +218,7 @@ export const getMacro = async (macroName, accessToken) => {
 // Delete Macro
 export const deleteMacro = async (macroId, accessToken) => {
   const axiosInstance = createAxiosInstance(accessToken);
-  const endpoint = '/DeleteMacro';
+  const endpoint = '/Report/DeleteMacro';
 
   try {
     const response = await axiosInstance.post(endpoint, { MacroId: macroId });
@@ -242,7 +242,7 @@ export const deleteMacro = async (macroId, accessToken) => {
 // Convert HTML to PDF
 export const convertHtmlToPdf = async (file, accessToken) => {
   const axiosInstance = createAxiosInstance(accessToken);
-  const endpoint = '/ConvertHtmlToPdf';
+  const endpoint = '/Report/ConvertHtmlToPdf';
 
   const formData = new FormData();
   formData.append('file', file);

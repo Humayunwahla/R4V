@@ -9,7 +9,7 @@ import TableSection from './Tablesection';
 import { DndContext, closestCenter, useSensor, useSensors, PointerSensor, KeyboardSensor } from '@dnd-kit/core';
 import { SortableContext, horizontalListSortingStrategy, arrayMove, useSortable, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { createMacro, createTemplate, getCatalog, getTemplate } from '../../utils/API_SERVICE';
+import { createMacro, createTemplate, getCatalog, getTemplate, getMacro } from '../../utils/API_SERVICE';
 import { useAuth } from '../../Hooks/useAuth';
 import dots from '../../assets/icons/dots.png';
 
@@ -43,6 +43,7 @@ function Home() {
       species: '',
       modality_type: '',
       study_type: '',
+      macros: [], // Store macros as an array
     },
   });
   const [draggingEnabled, setDraggingEnabled] = useState(true);
@@ -59,7 +60,6 @@ function Home() {
   // Fetch all templates on component mount
   // Fetch dropdown data on component mount
   useEffect(() => {
-
     const fetchCatalogs = async () => {
       try {
         const speciesResponse = await getCatalog({ catalogType: 1 }, accessToken);
@@ -75,7 +75,11 @@ function Home() {
         }
 
         if (studyTypeResponse.success) {
-          setStudy_Type(studyTypeResponse.payload.catalogItems.map(item => item.name));
+          setStudy_Type(studyTypeResponse.payload.catalogItems.map(item => ({
+            study_type_id: item.study_type_id,
+            name: item.name
+          })));
+          console.log("study type", study_type);
         }
       } catch (error) {
         console.error('Error fetching catalog data:', error);
@@ -93,14 +97,32 @@ function Home() {
     try {
       const fetchedTemplates = await getTemplate({}, accessToken);
       if (fetchedTemplates && fetchedTemplates.payload) {
-        const transformedData = fetchedTemplates.payload.map(template => ({
-          species: species[template.speciesId - 1],
-          modalityType: modality_type[template.modalityTypeId - 1],
-          studyType: study_type.find(type => type === template.studyTypeId) || template.studyTypeId,
-          userId: user_Id.find(id => id === template.createdBy) || template.createdBy,
-          macros: 'N/A', // Assuming macros are not part of the fetched template
-          template: template.templateName,
+        const transformedData = await Promise.all(fetchedTemplates.payload.map(async (template) => {
+          const speciesName = species[template.speciesId - 1];
+          const modalityTypeName = modality_type[template.modalityTypeId - 1];
+          const studyTypeName = study_type.find(type => type.study_type_id === template.studyTypeId)?.name || template.studyTypeId;
+          const userId = user_Id.find(id => id === template.createdBy) || template.createdBy;
+
+          let macroData = 'N/A';
+          try {
+            const fetchedMacro = await getMacro({ StudyTypeId: template.studyTypeId }, accessToken);
+            if (fetchedMacro && fetchedMacro.payload.length > 0) {
+              macroData = fetchedMacro.payload.map(macro => macro.macroName).join(', ');
+            }
+          } catch (error) {
+            console.error('Error fetching macro:', error);
+          }
+
+          return {
+            species: speciesName,
+            modalityType: modalityTypeName,
+            studyType: studyTypeName,
+            userId: userId,
+            macros: macroData,
+            template: template.templateName,
+          };
         }));
+
         setTemplateData(transformedData);
         console.log("Fetched Templates Data:", transformedData);
       } else {
@@ -132,9 +154,7 @@ function Home() {
       ...prev,
       add_information: {
         ...prev.add_information,
-        macros: {
-          value
-        }
+        macros: value,
       },
     }));
   };
@@ -151,7 +171,7 @@ function Home() {
         Content: JSON.stringify(contentObject),
         SpeciesId: species.indexOf(template.add_information.species) + 1 || 1,
         ModalityTypeId: modality_type.indexOf(template.add_information.modality_type) + 1 || 1,
-        StudyTypeId: 'a3f5d5f1-3a89-4c8b-8e91-0b28b6d6d1e3',
+        StudyTypeId: template.add_information.study_type?.study_type_id || 'a3f5d5f1-3a89-4c8b-8e91-0b28b6d6d1e0',
         Description: 'This is a sample template description for demonstration purposes.',
         IsActive: true,
         Header: "header content",
@@ -172,10 +192,26 @@ function Home() {
 
       alert('Template saved successfully!');
 
-      if (template.add_information.macros && Object.keys(template.add_information.macros).length > 0) {
-        const macroResponse = await createMacro(template.add_information.macros, accessToken);
-        console.log('Macro saved successfully!', macroResponse);
-        alert('Macro saved successfully!');
+      if (template.add_information.macros.length > 0) {
+        const existingMacros = await getMacro({}, accessToken);
+        const existingMacroNames = existingMacros.payload.map(macro => macro.macroName);
+
+        for (const macro of template.add_information.macros) {
+          if (!existingMacroNames.includes(macro)) {
+            const macroData = {
+              MacroName: macro,
+              SpeciesId: species.indexOf(template.add_information.species) + 1 || 1,
+              ModalityTypeId: modality_type.indexOf(template.add_information.modality_type) + 1 || 1,
+              StudyTypeId: template.add_information.study_type?.study_type_id || 'a3f5d5f1-3a89-4c8b-8e91-0b28b6d6d1e3',
+            };
+
+            const macroResponse = await createMacro(macroData, accessToken);
+            console.log('Macro saved successfully!', macroResponse);
+          } else {
+            console.warn(`Macro with name "${macro}" already exists.`);
+          }
+        }
+        alert('Macros saved successfully!');
       }
     } catch (error) {
       console.error('Failed to save template or macro', error);
@@ -237,6 +273,9 @@ function Home() {
       coordinateGetter: sortableKeyboardCoordinates,
     })
   );
+
+  // console.log("templateData", templateData);
+  
 
   return (
     <div className='overflow-hidden z-50'>
