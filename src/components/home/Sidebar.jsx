@@ -60,7 +60,7 @@ const Sidebar = ({
       >
         <option value="" disabled>{`Select ${label}`}</option>
         {options.map((item) => (
-          <option value={item.study_type_id || item} key={item.study_type_id || item}>
+          <option value={item.study_type_id || item.modality_type_id || item} key={item.study_type_id || item.modality_type_id || item}>
             {item.name || item}
           </option>
         ))}
@@ -242,10 +242,10 @@ const Sidebar = ({
                           </div>
                         </div>
                         {renderDropdown('Species', template.add_information.species, species, (e) => updateTemplate('species', e.target.value))}
-                        {renderDropdown('Modality Type', template.add_information.modality_type?.modality_id || '', modality_type, (e) => {
-                          const selectedModalityType = modality_type.find(mt => mt.modality_id === e.target.value);
+                        {renderDropdown('Modality Type', template.add_information?.modality_type?.modality_type_id || '', modality_type, (e) => {
+                          const selectedModalityType = modality_type.find(mt => mt.modality_type_id === parseInt(e.target.value, 10));
                           updateTemplate('modality_type', selectedModalityType);
-                          console.log("selectedModalityType", selectedModalityType);
+                          console.log("modality", selectedModalityType)
                         })}
                         {renderDropdown('Study Type', template.add_information.study_type?.study_type_id || '', study_type, (e) => {
                           const selectedStudyType = study_type.find(st => st.study_type_id === e.target.value);
