@@ -74,7 +74,10 @@ function Home() {
         }
 
         if (modalityTypeResponse.success) {
-          setModality_Type(modalityTypeResponse.payload.catalogItems.map(item => item.name));
+          setModality_Type(modalityTypeResponse.payload.catalogItems.map(item => ({
+            modality_type_id: item.modality_id,
+            name: item.name
+          })));
         }
 
         if (studyTypeResponse.success) {

@@ -68,7 +68,6 @@ const TableSection = ({ tableData = [], handleRowClick, handleEditClick, handleC
         </thead>
         <tbody className="text-xs">
           {loading ? (
-            // Display skeleton loaders for table rows
             [...Array(rowsPerPage)].map((_, index) => (
               <tr key={index}>
                 {[...Array(7)].map((_, i) => (
@@ -85,12 +84,14 @@ const TableSection = ({ tableData = [], handleRowClick, handleEditClick, handleC
                 className="cursor-pointer hover:bg-gray-100"
                 onClick={handleRowClick}
               >
-                <td className="border border-gray-300 px-4 py-2 font-dmSans">{row.species}</td>
-                <td className="border border-gray-300 px-4 py-2 font-dmSans">{row.modalityType}</td>
-                <td className="border border-gray-300 px-4 py-2 font-dmSans">{row.studyType}</td>
-                <td className="border border-gray-300 px-4 py-2 font-dmSans">{row.userId}</td>
-                <td className="border border-gray-300 px-4 py-2 font-dmSans">{row.macros}</td>
-                <td className="border border-gray-300 px-4 py-2 font-dmSans">{row.template}</td>
+                <td className="border border-gray-300 px-4 py-2 font-dmSans">{row.species || 'N/A'}</td>
+                <td className="border border-gray-300 px-4 py-2 font-dmSans">
+                  {typeof row.modalityType === 'object' ? row.modalityType.name || 'N/A' : row.modalityType}
+                </td>
+                <td className="border border-gray-300 px-4 py-2 font-dmSans">{row.studyType || 'N/A'}</td>
+                <td className="border border-gray-300 px-4 py-2 font-dmSans">{row.userId || 'N/A'}</td>
+                <td className="border border-gray-300 px-4 py-2 font-dmSans">{row.macros || 'N/A'}</td>
+                <td className="border border-gray-300 px-4 py-2 font-dmSans">{row.template || 'N/A'}</td>
                 <td className="border border-gray-300 px-4 py-2 font-dmSans">
                   <button
                     onClick={(e) => {
@@ -108,6 +109,7 @@ const TableSection = ({ tableData = [], handleRowClick, handleEditClick, handleC
             ))
           )}
         </tbody>
+
       </table>
 
       {/* Pagination controls */}
