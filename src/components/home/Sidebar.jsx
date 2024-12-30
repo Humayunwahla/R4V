@@ -43,6 +43,7 @@ const Sidebar = ({
   const [draggingEnabled, setDraggingEnabled] = useState(true);
   const [macros, setMacros] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false); // Add saving state
 
   useEffect(() => {
     // Simulate data fetching
@@ -106,6 +107,12 @@ const Sidebar = ({
     const newMacros = macros.filter((_, i) => i !== index);
     setMacros(newMacros);
     updateMacros(newMacros); // Update the template macros
+  };
+
+  const handleSaveTemplate = async () => {
+    setSaving(true); // Set saving state to true
+    await saveTemplate();
+    setSaving(false); // Set saving state to false
   };
 
   return (
@@ -184,10 +191,19 @@ const Sidebar = ({
                           ))}
                         </div>
                         <button
-                          onClick={saveTemplate}
-                          className="w-full bg-[#CBEA7B80] h-12 font-poppins rounded-full"
+                          onClick={handleSaveTemplate}
+                          className="w-full bg-[#CBEA7B80] h-12 font-poppins rounded-full flex items-center justify-center"
+                          disabled={saving} // Disable button when saving
                         >
-                          Save
+                          {saving ? (
+
+                            <div class="animate-spin inline-block size-6 border-[3px] border-current border-t-transparent text-blue-600 rounded-full dark:text-blue-500" role="status" aria-label="loading">
+                              <span class="sr-only">Loading...</span>
+                            </div>
+
+                          ) : (
+                            'Save'
+                          )}
                         </button>
                       </>
                     )}
