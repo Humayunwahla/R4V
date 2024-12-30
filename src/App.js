@@ -1,5 +1,6 @@
-import React, { useContext } from 'react';
-import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import React, { useContext, useEffect } from 'react';
+import { Route, BrowserRouter as Router, Routes, Navigate } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode'; // Use named import for jwtDecode
 import Landingpage from './components/Landingpage';
 import Patient from './pages/patient/Patient';
 import StudyDetails from './pages/studyDetails/StudyDetails';
@@ -14,14 +15,30 @@ import Message from './components/Message/Message';
 import Test from './components/Test';
 import Chat from './pages/chat/Chat';
 function App() {
-  const { accessToken, isAuthenticated, handleLogin } = useContext(UserContext);
+  const { accessToken, isAuthenticated, handleLogin, handleLogout } = useContext(UserContext);
+  // Check token validity on app load
+  useEffect(() => {
+    if (accessToken) {
+      try {
+        const decodedToken = jwtDecode(accessToken);
+        const currentTime = Math.floor(Date.now() / 1000); // Current time in seconds
+        if (decodedToken.exp < currentTime) {
+          console.warn("Token expired. Logging out.");
+          handleLogout(); // Logout if the token is expired
+        }
+      } catch (error) {
+        console.error("Failed to decode token", error);
+        handleLogout(); // Logout on token decode failure
+      }
+    }
+  }, [accessToken, handleLogout]);
   const getDataFromApi = () => {
     if (!accessToken) {
       console.error("No access token available");
       return;
     }
     const data = JSON.stringify({
-      "catalogType": 3
+      catalogType: 3
     });
     const config = {
       method: 'post',
@@ -29,7 +46,7 @@ function App() {
       url: 'https://devvetsapimanagement.azure-api.net/ReportingMicroservice/api/Catalog/GetCatalog',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + accessToken
+        Authorization: 'Bearer ' + accessToken
       },
       data: data
     };
@@ -41,16 +58,14 @@ function App() {
         console.error("API request error", error);
       });
   };
-  // console.log("TOKEN", accessToken);
-  
   return (
     <div className='p-3 overflow-hidden'>
       {isAuthenticated ? (
         <>
           <Header />
           <Router>
-            <div className='fixed bottom-3 right-3 '>
-              <Message/>
+            <div className='fixed bottom-3 right-3'>
+              <Message />
             </div>
             <Routes>
               <Route path='/' element={<Landingpage />} />
@@ -63,6 +78,8 @@ function App() {
                 <Route path="/chat" element={<Chat />} />
                 <Route path="/test" element={<Test />} />
               </Route>
+              {/* Redirect to login if not authenticated */}
+              <Route path="*" element={<Navigate to="/" />} />
             </Routes>
           </Router>
         </>
@@ -72,15 +89,4 @@ function App() {
     </div>
   );
 }
-// render(<App />, document.getElementById('root'));
 export default App;
-
-
-
-
-
-
-
-
-
-
