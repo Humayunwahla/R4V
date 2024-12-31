@@ -38,6 +38,7 @@ const Sidebar = ({
   study_type,
   user_Id,
   template,
+  macroData,
 }) => {
   const [sections, setSections] = useState(['addTemplate', 'addField', 'addInformation']);
   const [draggingEnabled, setDraggingEnabled] = useState(true);
@@ -217,6 +218,7 @@ const Sidebar = ({
                     {loading ? (
                       <Skeleton height={150} />
                     ) : (
+                      <>
                       <div className="flex gap-2 justify-between">
                         <div className="flex gap-2">
                           <div className="w-11 h-11 bg-gray-200 rounded-full flex justify-center items-center">
@@ -231,6 +233,19 @@ const Sidebar = ({
                           <img src={dots} alt="" className="w-1 h-4" />
                         </div>
                       </div>
+                      <div className="space-y-1 blur-overlay blur-bottom macros-height overflow-scroll custom-scrollbar">
+                        {macroData.map((macro, index) => (
+                          <div key={index} className='w-full flex gap-2 bg-gray-300 place-content-center items-center h-auto p-3 rounded-2xl mt-3'>
+                            <div className='w-8 h-8 place-content-center justify-items-center bg-black rounded-full'>
+                              <img src={dot} alt="" className='w-2 h-3' />
+                            </div>
+                            <div className='w-11/12'>
+                              <h1 className='text-[#828282] text-md'>{macro}</h1>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      </>
                     )}
                   </div>
                 </DraggableSection>

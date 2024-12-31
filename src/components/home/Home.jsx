@@ -35,6 +35,7 @@ function Home() {
   const [visibleRTE, setVisibleRTE] = useState([]);
   const [name, setName] = useState("");
   const [macro, setMacro] = useState("");
+  const [macroData, setMacroData] = useState([]);
   const [species, setSpecies] = useState([]);
   const [modality_type, setModality_Type] = useState([]);
   const [study_type, setStudy_Type] = useState([]);
@@ -63,6 +64,7 @@ function Home() {
 console.log("Header Content>>>>>>>", headerContent);
 console.log("Footer Content>>>>>>>", footerContent);
 console.log("Body Content>>>>>>>", bodyContent);
+console.log("Macro Content>>>>>>>", macroData);
 
   // Fetch all templates on component mount
   // Fetch dropdown data on component mount
@@ -102,6 +104,16 @@ console.log("Body Content>>>>>>>", bodyContent);
       // Perform any necessary cleanup here
     };
   }, [accessToken]);
+  const fetchedMacro = async () => {
+    try {
+      const macroResponse = await getMacro({}, accessToken);
+      if (macroResponse.success) {
+        setMacroData(macroResponse.payload.map(macro => macro.macroName));
+      }
+    } catch (error) {
+      console.error('Error fetching macro data:', error);
+    }
+  }
 
   const fetchTemplates = async () => {
     setLoading(true); // Set loading state to true before fetching templates
@@ -119,6 +131,8 @@ console.log("Body Content>>>>>>>", bodyContent);
             const fetchedMacro = await getMacro({ StudyTypeId: template.studyTypeId }, accessToken);
             if (fetchedMacro && fetchedMacro.payload.length > 0) {
               macroData = fetchedMacro.payload.map(macro => macro.macroName).join(', ');
+              console.log(fetchedMacro);
+              
             }
           } catch (error) {
             console.error('Error fetching macro:', error);
@@ -149,6 +163,7 @@ console.log("Body Content>>>>>>>", bodyContent);
   useEffect(() => {
     if (species.length && modality_type.length && study_type.length) {
       fetchTemplates();
+      fetchedMacro();
     }
   }, [accessToken, species, modality_type, study_type, user_Id]);
 
@@ -432,6 +447,7 @@ console.log("Template Data>>>>>", templateData);
                             study_type={study_type}
                             user_Id={user_Id}
                             template={template}
+                            macroData={macroData}
                           />
                         </div>
                       )}
