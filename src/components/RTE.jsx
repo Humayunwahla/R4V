@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import 'react-quill/dist/quill.snow.css';
 import ReactQuill from 'react-quill';
 import Dots from '../assets/icons/dots.png';
-function RTE({ name, label, defaultValue = "", heightValue }) {
+function RTE({ name, label, defaultValue = "", heightValue, onChange}) {
   const [value, setValue] = useState(defaultValue);
   const modules = {
     toolbar: [
@@ -23,13 +23,20 @@ function RTE({ name, label, defaultValue = "", heightValue }) {
       userOnly: true, // Tracks user edits only
     },
   };
+  const handleChange = (newValue) => {
+    setValue(newValue);
+    if (onChange) {
+      onChange(newValue);
+    }
+  };
+
   return (
     <div className='relative'>
       {label && <label htmlFor={name} className="block text-sm font-medium text-gray-700">{label}</label>}
       <div className="mt-8 relative shadow-2xl rounded-lg overflow-hidden bg-white">
         <ReactQuill
           value={value}
-          onChange={setValue}
+          onChange={handleChange}
           style={{ height: heightValue }}
           modules={modules}
         />

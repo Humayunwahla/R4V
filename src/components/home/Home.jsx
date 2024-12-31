@@ -55,10 +55,14 @@ function Home() {
   const [headerContent, setHeaderContent] = useState("");
   const [bodyContent, setBodyContent] = useState("");
   const [footerContent, setFooterContent] = useState("");
+  const [macroContent, setMacroContent] = useState("");
   const [templateData, setTemplateData] = useState([]); // Store multiple template data
   const [templateId, setTemplateId] = useState(null); // State variable to store templateId
 
   const accessToken = useAuth();
+console.log("Header Content>>>>>>>", headerContent);
+console.log("Footer Content>>>>>>>", footerContent);
+console.log("Body Content>>>>>>>", bodyContent);
 
   // Fetch all templates on component mount
   // Fetch dropdown data on component mount
@@ -181,11 +185,12 @@ function Home() {
         SpeciesId: species.indexOf(template.add_information.species) + 1 || 1,
         ModalityTypeId: modality_type.indexOf(template.add_information.modality_type) + 1 || 1,
         StudyTypeId: template.add_information.study_type?.study_type_id || 'a3f5d5f1-3a89-4c8b-8e91-0b28b6d6d1e0',
-        Description: 'This is a sample template description for demonstration purposes.',
+        Description: bodyContent,
         IsActive: true,
-        Header: "header content",
-        Footer: "footer content",
+        Header: headerContent,
+        Footer: footerContent,
       };
+console.log("Template Data>>>>>", templateData);
 
       const templateResponse = await createTemplate(templateData, accessToken);
       console.log('Template saved successfully!', templateResponse);
@@ -325,6 +330,8 @@ function Home() {
             heading="Template Footer"
             paragraph="Another description for this card."
             className=""
+            radioValue={visibleRTE.includes(3)}
+            onRadioChange={() => handleRadioChange(3)}
           />
         </div>
       </div>
@@ -356,10 +363,11 @@ function Home() {
                                 <RTE
                                   name="editor"
                                   heightValue={400}
+                                  value={value => setHeaderContent(value)}
                                   defaultValue="Initial content for Card 1"
                                   onFocus={handleFocus}
                                   onBlur={handleBlur}
-                                  onChange={setHeaderContent}
+                                  onChange={setMacroContent}
                                 />
                               </div>
                             </div>
@@ -382,6 +390,18 @@ function Home() {
                                 name="editor"
                                 heightValue={400}
                                 defaultValue="Initial content for Card 3"
+                                onFocus={handleFocus}
+                                onBlur={handleBlur}
+                                onChange={setHeaderContent}
+                              />
+                            </div>
+                          )}
+                          {visibleRTE.includes(3) && (
+                            <div>
+                              <RTE
+                                name="editor"
+                                heightValue={400}
+                                defaultValue="Initial content for Card 4"
                                 onFocus={handleFocus}
                                 onBlur={handleBlur}
                                 onChange={setFooterContent}

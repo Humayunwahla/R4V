@@ -99,6 +99,7 @@ const TableSection = ({ tableData = [], handleRowClick, handleEditClick, handleC
                   handleCardClick(0);
                   handleCardClick(1);
                   handleCardClick(2);
+                  handleCardClick(3);
                 }} 
                  className="border border-gray-300 px-4 py-2 font-dmSans">
                   <button
