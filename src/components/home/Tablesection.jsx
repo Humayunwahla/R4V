@@ -92,15 +92,17 @@ const TableSection = ({ tableData = [], handleRowClick, handleEditClick, handleC
                 <td className="border border-gray-300 px-4 py-2 font-dmSans">{row.userId || 'N/A'}</td>
                 <td className="border border-gray-300 px-4 py-2 font-dmSans">{row.macros || 'N/A'}</td>
                 <td className="border border-gray-300 px-4 py-2 font-dmSans">{row.template || 'N/A'}</td>
-                <td className="border border-gray-300 px-4 py-2 font-dmSans">
+                <td 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleEditClick(row);
+                  handleCardClick(0);
+                  handleCardClick(1);
+                  handleCardClick(2);
+                }} 
+                 className="border border-gray-300 px-4 py-2 font-dmSans">
                   <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleEditClick(row);
-                      handleCardClick(0);
-                      handleCardClick(1);
-                      handleCardClick(2);
-                    }}
+                    
                   >
                     Edit
                   </button>

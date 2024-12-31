@@ -53,7 +53,7 @@ const Sidebar = ({
   }, []);
 
   const renderDropdown = (label, value, options, onChange) => (
-    <div className="w-full h-12 p-3 rounded-full mt-3">
+    <div className="w-full h-12 p-3 rounded-full mt-3 mb-5">
       <select
         className="w-full border p-3 rounded-full bg-gray-300"
         value={value}
