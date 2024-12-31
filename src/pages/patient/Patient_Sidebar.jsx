@@ -48,7 +48,7 @@ function DraggableSection({ id, children }) {
   );
 }
 
-function Patient_Sidebar() {
+function Patient_Sidebar({rowData}) {
   const [isRecording, setIsRecording] = useState(false);
   const [recordedAudio, setRecordedAudio] = useState(null);
   const [templates, setTemplates] = useState([
@@ -196,20 +196,20 @@ function Patient_Sidebar() {
                           <div className='w-8 h-8 place-content-center justify-items-center bg-black rounded-full'>
                             <img src={dot} alt="" className='w-2 h-3' />
                           </div>
-                          <h1 className='font-normal place-content-center'>Template name</h1>
+                          <h1 className='font-normal place-content-center'>{rowData.template}</h1>
                         </div>
                         <div className='gap-2 mt-2 flex flex-wrap'>
                           <div className='w-auto px-3 h-8 bg-white rounded-full p-2 text-xs place-content-center justify-items-center'>
-                            <h1 className='template-subheading'>Species: Bull Dog</h1>
+                            <h1 className='template-subheading'>Species:{rowData.species}</h1>
                           </div>
                           <div className='w-auto px-3 h-8 bg-white rounded-full p-2 text-xs place-content-center justify-items-center'>
-                            <h1 className='template-subheading'>Modality: MRI</h1>
+                            <h1 className='template-subheading'>Modality: {rowData.modalityType.name}</h1>
                           </div>
                           <div className='w-auto px-3 h-8 bg-white rounded-full p-2 text-xs place-content-center justify-items-center'>
-                            <h1 className='template-subheading'>Study: Chest</h1>
+                            <h1 className='template-subheading'>Study: {rowData.studyType}</h1>
                           </div>
                           <div className='w-auto px-3 h-8 bg-white rounded-full text-xs place-content-center justify-items-center'>
-                            <h1 className='template-subheading'>User ID: 3567s34244</h1>
+                            <h1 className='template-subheading'>User ID: {rowData.userId}</h1>
                           </div>
                         </div>
                       </div>
@@ -246,7 +246,7 @@ function Patient_Sidebar() {
                               <img src={dot} alt="" className='w-2 h-3' />
                             </div>
                             <div className='w-11/12'>
-                              <h1 className='macros-text'>{macro.text}</h1>
+                              <h1 className='macros-text'>{rowData.macros}</h1>
                             </div>
                           </div>
                         ))}

@@ -270,10 +270,9 @@ console.log("Template Data>>>>>", templateData);
     });
   };
 
-  const handleRowClick = () => {
-    navigate('/patient');
+  const handleRowClick = (row) => {
+    navigate('/patient', { state: { rowData: row } });
   };
-
   const handleEditClick = () => {
     console.log('Edit button clicked');
   };

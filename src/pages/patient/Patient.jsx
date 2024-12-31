@@ -10,6 +10,7 @@ import { BsViewStacked } from "react-icons/bs";
 import { RiFilter2Line } from "react-icons/ri";
 import dots from '../../assets/icons/dots.png';
 import './Patient.css';
+import { useLocation } from 'react-router-dom';
 // DraggableSection component using useSortable hook for main sections
 function DraggableSection({ id, children }) {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
@@ -27,6 +28,8 @@ function DraggableSection({ id, children }) {
 function Patient() {
   const [isRecording, setIsRecording] = useState(false);
   const [recordedAudio, setRecordedAudio] = useState(null);
+  const location = useLocation();
+  const rowData = location.state?.rowData; // Retrieve row data
   const [sections, setSections] = useState(['rte', 'sidebar']);
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -34,6 +37,8 @@ function Patient() {
       coordinateGetter: sortableKeyboardCoordinates,
     })
   );
+  console.log('Row Data:', rowData);
+  
   const handleStartStopRecording = () => {
     setIsRecording((prevState) => !prevState);
   };
@@ -72,7 +77,9 @@ function Patient() {
                 return (
                   <div className='lg:w-2/6'>
                   <DraggableSection key={section} id={section}>
-                    <Patient_Sidebar />
+                    <Patient_Sidebar
+                    rowData={rowData}
+                     />
                   </DraggableSection>
                   </div>
                 );

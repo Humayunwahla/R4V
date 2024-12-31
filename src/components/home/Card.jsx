@@ -3,7 +3,7 @@ import React from 'react';
 function Card({ heading, paragraph, radioValue, className = '' , onRadioChange  }) {
   return (
     <div 
-    className={`border border-gray-300 rounded-lg p-2 w-full max-w-xs h-20 mx-auto shadow-sm flex justify-between items-center 
+    className={`border border-gray-300 rounded-lg p-2 w-full max-w-xs h-20 mx-auto shadow-sm flex justify-between items-center cursor-pointer 
       ${radioValue ? 'bg-[#CBEA7B80]' : 'bg-gray-200'} ${className} sm:max-w-sm md:max-w-md lg:max-w-lg`}
   >
     <div className="flex-1">

@@ -82,7 +82,7 @@ const TableSection = ({ tableData = [], handleRowClick, handleEditClick, handleC
               <tr
                 key={index}
                 className="cursor-pointer hover:bg-gray-100"
-                onClick={handleRowClick}
+                onClick={() => handleRowClick(row)}
               >
                 <td className="border border-gray-300 px-4 py-2 font-dmSans">{row.species || 'N/A'}</td>
                 <td className="border border-gray-300 px-4 py-2 font-dmSans">
