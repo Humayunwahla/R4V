@@ -212,7 +212,7 @@ function Home() {
         console.log('Template ID:', newTemplateId);
 
         // Fetch the newly created template
-        await fetchTemplates();
+        
       }
 
       alert('Template saved successfully!');
@@ -237,6 +237,7 @@ function Home() {
           }
         }
         alert('Macros saved successfully!');
+        await fetchTemplates();
       }
     } catch (error) {
       console.error('Failed to save template or macro', error);
