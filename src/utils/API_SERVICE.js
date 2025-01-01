@@ -119,6 +119,55 @@ export const getTemplate = async (templateId, accessToken) => {
   }
 };
 
+//get single template
+export const getSingleTemplate = async (templateId, accessToken) => {
+  const axiosInstance = createAxiosInstance(accessToken);
+  const endpoint = '/Report/GetTemplate';
+
+  try {
+    const response = await axiosInstance.post(endpoint, templateId);
+    console.log("API Response Data:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching template:", {
+      message: error.message,
+      config: error.config,
+      response: error.response ? {
+        status: error.response.status,
+        data: error.response.data,
+        headers: error.response.headers,
+      } : null,
+    });
+
+    throw error;
+  }
+};
+
+//update template /Report/UpdateTemplate
+export const updateTemplate = async (templateObj, accessToken) => {
+  const axiosInstance = createAxiosInstance(accessToken);
+  const endpoint = '/Report/DeleteTemplate';
+
+  try {
+    const response = await axiosInstance.post(endpoint, templateObj);
+    console.log("API Response Data:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting template:", {
+      message: error.message,
+      config: error.config,
+      response: error.response ? {
+        status: error.response.status,
+        data: error.response.data,
+        headers: error.response.headers,
+      } : null,
+    });
+
+    throw error;
+  }
+};
+
+
 // Delete Template
 export const deleteTemplate = async (templateId, accessToken) => {
   const axiosInstance = createAxiosInstance(accessToken);
@@ -174,7 +223,7 @@ export const isMacroExists = async (macroName, accessToken) => {
 
   try {
     const response = await axiosInstance.post(endpoint, { MacroName: macroName });
-    console.log("API Response Data:", response.data);
+    // console.log("API Response Data:", response.data);
     return response.data;
   } catch (error) {
     console.error("Error checking macro existence:", {

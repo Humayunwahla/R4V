@@ -11,7 +11,7 @@ import TableSection from './Tablesection';
 import { DndContext, closestCenter, useSensor, useSensors, PointerSensor, KeyboardSensor } from '@dnd-kit/core';
 import { SortableContext, horizontalListSortingStrategy, arrayMove, useSortable, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { createMacro, createTemplate, getCatalog, getTemplate, getMacro } from '../../utils/API_SERVICE';
+import { createMacro, createTemplate, getCatalog, getTemplate, getMacro, updateTemplate, getSingleTemplate } from '../../utils/API_SERVICE';
 import { useAuth } from '../../Hooks/useAuth';
 import dots from '../../assets/icons/dots.png';
 
@@ -59,12 +59,9 @@ function Home() {
   const [macroContent, setMacroContent] = useState("");
   const [templateData, setTemplateData] = useState([]); // Store multiple template data
   const [templateId, setTemplateId] = useState(null); // State variable to store templateId
+  const [singleFetchedTemplate, setSingleFetchedTemplate] = useState(null); // State variable to store fetched template
 
   const accessToken = useAuth();
-console.log("Header Content>>>>>>>", headerContent);
-console.log("Footer Content>>>>>>>", footerContent);
-console.log("Body Content>>>>>>>", bodyContent);
-console.log("Macro Content>>>>>>>", macroData);
 
   // Fetch all templates on component mount
   // Fetch dropdown data on component mount
@@ -104,6 +101,7 @@ console.log("Macro Content>>>>>>>", macroData);
       // Perform any necessary cleanup here
     };
   }, [accessToken]);
+
   const fetchedMacro = async () => {
     try {
       const macroResponse = await getMacro({}, accessToken);
@@ -132,7 +130,7 @@ console.log("Macro Content>>>>>>>", macroData);
             if (fetchedMacro && fetchedMacro.payload.length > 0) {
               macroData = fetchedMacro.payload.map(macro => macro.macroName).join(', ');
               console.log(fetchedMacro);
-              
+
             }
           } catch (error) {
             console.error('Error fetching macro:', error);
@@ -145,6 +143,7 @@ console.log("Macro Content>>>>>>>", macroData);
             userId: userId,
             macros: macroData,
             template: template.templateName,
+            templateId: template.templateId // Store the templateId
           };
         }));
 
@@ -167,7 +166,7 @@ console.log("Macro Content>>>>>>>", macroData);
     }
   }, [accessToken, species, modality_type, study_type, user_Id]);
 
-  const updateTemplate = (key, value) => {
+  const updateTemplateState = (key, value) => {
     setTemplate((prev) => ({
       ...prev,
       add_information: {
@@ -205,7 +204,7 @@ console.log("Macro Content>>>>>>>", macroData);
         Header: headerContent,
         Footer: footerContent,
       };
-console.log("Template Data>>>>>", templateData);
+      console.log("Template Data>>>>>", templateData);
 
       const templateResponse = await createTemplate(templateData, accessToken);
       console.log('Template saved successfully!', templateResponse);
@@ -273,8 +272,57 @@ console.log("Template Data>>>>>", templateData);
   const handleRowClick = (row) => {
     navigate('/patient', { state: { rowData: row } });
   };
-  const handleEditClick = () => {
-    console.log('Edit button clicked');
+
+  const handleEditClick = async (row) => {
+    console.log('Edit button clicked', row.templateId);
+    try {
+      const fetchedTemplate = await getSingleTemplate({ templateId: row.templateId }, accessToken);
+      console.log('Fetched Template from table:', fetchedTemplate);
+      if (fetchedTemplate && fetchedTemplate.payload) {
+        const template = fetchedTemplate.payload;
+        setTemplateId(template.templateId);
+        setName(template.templateName);
+        setHeaderContent(template.header);
+        setBodyContent(template.body);
+        setFooterContent(template.footer);
+        updateTemplateState('species', species[template.speciesId - 1] || '');
+        updateTemplateState('modality_type', modality_type.find(type => type.modality_type_id === template.modalityTypeId) || '');
+        updateTemplateState('study_type', study_type.find(type => type.study_type_id === template.studyTypeId) || '');
+        updateTemplateState('macros', template.macros || []);
+        setSingleFetchedTemplate(template); // Store fetched template data in state
+      }
+    } catch (error) {
+      console.error('Error fetching template:', error);
+    }
+  };
+
+  const updateExistingTemplate = async () => {
+    const contentObject = {
+      header: headerContent,
+      body: bodyContent,
+      footer: footerContent,
+    };
+
+    const templateData = {
+      TemplateName: template.add_information.name,
+      Content: JSON.stringify(contentObject),
+      SpeciesId: species.indexOf(template.add_information.species) + 1,
+      ModalityTypeId: modality_type.find(type => type.name === template.add_information.modality_type)?.modality_type_id,
+      StudyTypeId: template.add_information.study_type?.study_type_id,
+      Description: bodyContent,
+      IsActive: true,
+    };
+
+    console.log('Updated Template Data:', templateData);
+    try {
+      const response = await updateTemplate(templateId, templateData, accessToken);
+      console.log('Template updated successfully!', response);
+      alert('Template updated successfully!');
+      // Optionally, you can refresh the template list or perform another action
+    } catch (error) {
+      console.error('Failed to update template', error);
+      alert('Failed to update template');
+    }
   };
 
   const handleDragEnd = (event) => {
@@ -439,7 +487,7 @@ console.log("Template Data>>>>>", templateData);
                             macro={macro}
                             setMacro={setMacro}
                             saveTemplate={saveTemplate}
-                            updateTemplate={updateTemplate}
+                            updateTemplate={updateTemplateState}
                             updateMacros={updateMacros}
                             species={species}
                             modality_type={modality_type}

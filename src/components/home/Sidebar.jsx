@@ -39,12 +39,24 @@ const Sidebar = ({
   user_Id,
   template,
   macroData,
+  singleFetchedTemplate // Add this prop to receive the fetched template data
 }) => {
   const [sections, setSections] = useState(['addTemplate', 'addField', 'addInformation']);
   const [draggingEnabled, setDraggingEnabled] = useState(true);
   const [macros, setMacros] = useState([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false); // Add saving state
+
+  // Update the state variables when the fetched template data changes
+  useEffect(() => {
+    if (singleFetchedTemplate) {
+      setName(singleFetchedTemplate.templateName);
+      setMacros(singleFetchedTemplate.macros || []);
+      updateTemplate('species', species[singleFetchedTemplate.speciesId - 1] || '');
+      updateTemplate('modality_type', modality_type.find(type => type.modality_type_id === singleFetchedTemplate.modalityTypeId) || '');
+      updateTemplate('study_type', study_type.find(type => type.study_type_id === singleFetchedTemplate.studyTypeId) || '');
+    }
+  }, [singleFetchedTemplate, species, modality_type, study_type, updateTemplate]);
 
   useEffect(() => {
     // Simulate data fetching
@@ -197,11 +209,9 @@ const Sidebar = ({
                           disabled={saving} // Disable button when saving
                         >
                           {saving ? (
-
-                            <div class="animate-spin inline-block size-6 border-[3px] border-current border-t-transparent text-blue-600 rounded-full dark:text-blue-500" role="status" aria-label="loading">
-                              <span class="sr-only">Loading...</span>
+                            <div className="animate-spin inline-block size-6 border-[3px] border-current border-t-transparent text-blue-600 rounded-full dark:text-blue-500" role="status" aria-label="loading">
+                              <span className="sr-only">Loading...</span>
                             </div>
-
                           ) : (
                             'Save'
                           )}
@@ -219,32 +229,32 @@ const Sidebar = ({
                       <Skeleton height={150} />
                     ) : (
                       <>
-                      <div className="flex gap-2 justify-between">
-                        <div className="flex gap-2">
-                          <div className="w-11 h-11 bg-gray-200 rounded-full flex justify-center items-center">
-                            <img src={copy} alt="" className="w-5 h-5" />
-                          </div>
-                          <div className="text-xs">
-                            <h1 className="font-bold">Add fields</h1>
-                            <p>Select the fields from the table below</p>
-                          </div>
-                        </div>
-                        <div className="bg-[#CBEA7B] w-10 h-10 rounded-full flex justify-center items-center">
-                          <img src={dots} alt="" className="w-1 h-4" />
-                        </div>
-                      </div>
-                      <div className="space-y-1 blur-overlay blur-bottom macros-height overflow-scroll custom-scrollbar">
-                        {macroData.map((macro, index) => (
-                          <div key={index} className='w-full flex gap-2 bg-gray-300 place-content-center items-center h-auto p-3 rounded-2xl mt-3'>
-                            <div className='w-8 h-8 place-content-center justify-items-center bg-black rounded-full'>
-                              <img src={dot} alt="" className='w-2 h-3' />
+                        <div className="flex gap-2 justify-between">
+                          <div className="flex gap-2">
+                            <div className="w-11 h-11 bg-gray-200 rounded-full flex justify-center items-center">
+                              <img src={copy} alt="" className="w-5 h-5" />
                             </div>
-                            <div className='w-11/12'>
-                              <h1 className='text-[#828282] text-md'>{macro}</h1>
+                            <div className="text-xs">
+                              <h1 className="font-bold">Add fields</h1>
+                              <p>Select the fields from the table below</p>
                             </div>
                           </div>
-                        ))}
-                      </div>
+                          <div className="bg-[#CBEA7B] w-10 h-10 rounded-full flex justify-center items-center">
+                            <img src={dots} alt="" className="w-1 h-4" />
+                          </div>
+                        </div>
+                        <div className="space-y-1 blur-overlay blur-bottom macros-height overflow-scroll custom-scrollbar">
+                          {macroData.map((macro, index) => (
+                            <div key={index} className='w-full flex gap-2 bg-gray-300 place-content-center items-center h-auto p-3 rounded-2xl mt-3'>
+                              <div className='w-8 h-8 place-content-center justify-items-center bg-black rounded-full'>
+                                <img src={dot} alt="" className='w-2 h-3' />
+                              </div>
+                              <div className='w-11/12'>
+                                <h1 className='text-[#828282] text-md'>{macro}</h1>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
                       </>
                     )}
                   </div>
