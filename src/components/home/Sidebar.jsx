@@ -39,7 +39,8 @@ const Sidebar = ({
   user_Id,
   template,
   macroData,
-  singleFetchedTemplate // Add this prop to receive the fetched template data
+  singleFetchedTemplate, // Add this prop to receive the fetched template data
+  isEditing // Add isEditing state to determine if we are editing or creating a new template
 }) => {
   const [sections, setSections] = useState(['addTemplate', 'addField', 'addInformation']);
   const [draggingEnabled, setDraggingEnabled] = useState(true);
@@ -213,7 +214,7 @@ const Sidebar = ({
                               <span className="sr-only">Loading...</span>
                             </div>
                           ) : (
-                            'Save'
+                            isEditing ? 'Update' : 'Save' // Change button text based on isEditing state
                           )}
                         </button>
                       </>

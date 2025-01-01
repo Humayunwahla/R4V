@@ -51,6 +51,7 @@ function Home() {
     },
   });
   const [draggingEnabled, setDraggingEnabled] = useState(true);
+  const [isEditing, setIsEditing] = useState(false);
 
   // State variables to store RTE content
   const [headerContent, setHeaderContent] = useState("");
@@ -96,10 +97,7 @@ function Home() {
     };
 
     fetchCatalogs();
-
-    return () => {
-      // Perform any necessary cleanup here
-    };
+    fetchedMacro();
   }, [accessToken]);
 
   const fetchedMacro = async () => {
@@ -162,7 +160,6 @@ function Home() {
   useEffect(() => {
     if (species.length && modality_type.length && study_type.length) {
       fetchTemplates();
-      fetchedMacro();
     }
   }, [accessToken, species, modality_type, study_type, user_Id]);
 
@@ -290,6 +287,7 @@ function Home() {
         updateTemplateState('study_type', study_type.find(type => type.study_type_id === template.studyTypeId) || '');
         updateTemplateState('macros', template.macros || []);
         setSingleFetchedTemplate(template); // Store fetched template data in state
+        setIsEditing(true); // Set the editing state to true
       }
     } catch (error) {
       console.error('Error fetching template:', error);
@@ -315,10 +313,11 @@ function Home() {
 
     console.log('Updated Template Data:', templateData);
     try {
-      const response = await updateTemplate(templateId, templateData, accessToken);
+      const response = await updateTemplate(templateData, accessToken);
       console.log('Template updated successfully!', response);
       alert('Template updated successfully!');
       // Optionally, you can refresh the template list or perform another action
+      setIsEditing(false); // Set the editing state to false after updating
     } catch (error) {
       console.error('Failed to update template', error);
       alert('Failed to update template');
@@ -486,7 +485,7 @@ function Home() {
                             setName={setName}
                             macro={macro}
                             setMacro={setMacro}
-                            saveTemplate={saveTemplate}
+                            saveTemplate={isEditing ? updateExistingTemplate : saveTemplate}
                             updateTemplate={updateTemplateState}
                             updateMacros={updateMacros}
                             species={species}
@@ -495,6 +494,8 @@ function Home() {
                             user_Id={user_Id}
                             template={template}
                             macroData={macroData}
+                            // singleFetchedTemplate={singleFetchedTemplate}
+                            isEditing={isEditing} // Pass the isEditing state to the Sidebar
                           />
                         </div>
                       )}

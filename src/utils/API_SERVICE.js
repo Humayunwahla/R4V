@@ -146,7 +146,7 @@ export const getSingleTemplate = async (templateId, accessToken) => {
 //update template /Report/UpdateTemplate
 export const updateTemplate = async (templateObj, accessToken) => {
   const axiosInstance = createAxiosInstance(accessToken);
-  const endpoint = '/Report/DeleteTemplate';
+  const endpoint = '/Report/UpdateTemplate';
 
   try {
     const response = await axiosInstance.post(endpoint, templateObj);
