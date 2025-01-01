@@ -121,10 +121,10 @@ console.log("Macro Content>>>>>>>", macroData);
       const fetchedTemplates = await getTemplate({}, accessToken);
       if (fetchedTemplates && fetchedTemplates.payload) {
         const transformedData = await Promise.all(fetchedTemplates.payload.map(async (template) => {
-          const speciesName = species[template.speciesId - 1];
-          const modalityTypeName = modality_type[template.modalityTypeId - 1];
-          const studyTypeName = study_type.find(type => type.study_type_id === template.studyTypeId)?.name || template.studyTypeId;
-          const userId = user_Id.find(id => id === template.createdBy) || template.createdBy;
+          const speciesName = species[template.speciesId - 1] || 'N/A';
+          const modalityTypeName = modality_type[template.modalityTypeId - 1] || 'N/A';
+          const studyTypeName = study_type.find(type => type.study_type_id === template.studyTypeId)?.name || template.studyTypeId || 'N/A';
+          const userId = user_Id.find(id => id === template.createdBy) || template.createdBy || 'N/A';
 
           let macroData = 'N/A';
           try {
