@@ -153,7 +153,7 @@ export const updateTemplate = async (templateObj, accessToken) => {
     console.log("API Response Data:", response.data);
     return response.data;
   } catch (error) {
-    console.error("Error deleting template:", {
+    console.error("error updating template:", {
       message: error.message,
       config: error.config,
       response: error.response ? {
