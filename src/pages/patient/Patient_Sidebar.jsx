@@ -46,7 +46,7 @@ function DraggableSection({ id, children }) {
   );
 }
 
-function Patient_Sidebar({ rowData }) {
+function Patient_Sidebar({ rowData, onTranscriptChange }) {
   const [templates, setTemplates] = useState([
     { id: 'template-1', text: 'Template name', details: 'Species: Bull Dog' },
     { id: 'template-2', text: 'Template name', details: 'Modality: MRI' },
@@ -77,8 +77,10 @@ function Patient_Sidebar({ rowData }) {
   );
 
   useEffect(() => {
-    console.log("Transcript data:", transcript);
-  }, [transcript]);
+    if (transcript) {
+      onTranscriptChange(transcript); // Call the callback function with the updated transcript
+    }
+  }, [transcript, onTranscriptChange]);
 
   if (!browserSupportsSpeechRecognition) {
     return <span>Browser doesn't support speech recognition.</span>;

@@ -30,6 +30,7 @@ function DraggableSection({ id, children }) {
 function Patient() {
   const [isRecording, setIsRecording] = useState(false);
   const [recordedAudio, setRecordedAudio] = useState(null);
+  const [transcript, setTranscript] = useState(''); // State to store the transcript
   const location = useLocation();
   const rowData = location.state?.rowData; // Retrieve row data
   const [sections, setSections] = useState(['rte', 'sidebar']);
@@ -40,7 +41,8 @@ function Patient() {
     })
   );
   console.log('Row Data:', rowData);
-
+ console.log('Transcript:', transcript);
+ 
   const handleStartStopRecording = () => {
     setIsRecording((prevState) => !prevState);
   };
@@ -49,6 +51,9 @@ function Patient() {
     console.log('Recorded Blob:', recordedBlob);
     setRecordedAudio(recordedBlob);
     // Process the audio blob here (e.g., send it to a speech-to-text API)
+  };
+  const handleTranscriptChange = (newTranscript) => {
+    setTranscript(newTranscript); // Update the transcript state
   };
 
   const handleDragEnd = (event) => {
@@ -71,6 +76,10 @@ function Patient() {
               if (section === 'rte') {
                 return (
                   <div className='lg:w-4/6' key={section}>
+                    <div className='flex flex-col justify-items-right'>
+                      <button className="border w-28 bg-[#CBEA7B80] h-10 rounded-full px-3 mt-2" >Procced</button> 
+                    <h1>{transcript}</h1>
+                    </div>
                     <DraggableSection id={section}>
                       {(listeners) => (
                         <div className='relative'>
@@ -78,7 +87,7 @@ function Patient() {
                             <img src={dots} alt="" className="w-1 h-4" />
                           </div>
                           <div>
-                            <RTE name="editor" heightValue={800} defaultValue="Initial content for Card 2" />
+                            <RTE name="editor" heightValue={800} defaultValue={"Initial content for Card 2"} value={transcript} />
                           </div>
                         </div>
                       )}
@@ -91,7 +100,7 @@ function Patient() {
                     <DraggableSection id={section}>
                       {(listeners) => (
                         <div>
-                          <Patient_Sidebar rowData={rowData} />
+                          <Patient_Sidebar rowData={rowData} onTranscriptChange={handleTranscriptChange}/>
                         </div>
                       )}
                     </DraggableSection>
