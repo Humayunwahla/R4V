@@ -11,6 +11,8 @@ import { RiFilter2Line } from "react-icons/ri";
 import dots from '../../assets/icons/dots.png';
 import './Patient.css';
 import { useLocation } from 'react-router-dom';
+import { BsStars } from "react-icons/bs";
+
 
 // DraggableSection component using useSortable hook for main sections
 function DraggableSection({ id, children }) {
@@ -76,9 +78,8 @@ function Patient() {
               if (section === 'rte') {
                 return (
                   <div className='lg:w-4/6' key={section}>
-                    <div className='flex flex-col justify-items-right'>
-                      <button className="border w-28 bg-[#CBEA7B80] h-10 rounded-full px-3 mt-2" >Procced</button> 
-                    <h1>{transcript}</h1>
+                    <div className='flex justify-end'>
+                      <button className="border  bg-[#CBEA7B80] p-2 rounded-full  mt-2 flex items-center justify-center gap-1" >Process with AI <span><BsStars color='black' /></span></button> 
                     </div>
                     <DraggableSection id={section}>
                       {(listeners) => (
@@ -87,7 +88,7 @@ function Patient() {
                             <img src={dots} alt="" className="w-1 h-4" />
                           </div>
                           <div>
-                            <RTE name="editor" heightValue={800} defaultValue={"Initial content for Card 2"} value={transcript} />
+                            <RTE name="editor" heightValue={800} defaultValue={transcript || "default"} value={transcript} />
                           </div>
                         </div>
                       )}

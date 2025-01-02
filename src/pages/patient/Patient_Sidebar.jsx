@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { DndContext, closestCenter } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import { useSensor, useSensors, PointerSensor, KeyboardSensor } from '@dnd-kit/core';
@@ -76,11 +76,17 @@ function Patient_Sidebar({ rowData, onTranscriptChange }) {
     })
   );
 
-  useEffect(() => {
+  const handleSendTranscript = () => {
     if (transcript) {
       onTranscriptChange(transcript); // Call the callback function with the updated transcript
+      resetTranscript(); // Optionally reset the transcript
     }
-  }, [transcript, onTranscriptChange]);
+  };
+
+  useEffect(() => {
+    // This effect will run whenever the transcript changes
+    // We don't need to automatically send the transcript anymore
+  }, [transcript]);
 
   if (!browserSupportsSpeechRecognition) {
     return <span>Browser doesn't support speech recognition.</span>;
@@ -136,7 +142,7 @@ function Patient_Sidebar({ rowData, onTranscriptChange }) {
                                 <img src={addphoto} alt="" className='w-4 h-4' />
                               </div>
                               <div className='w-8 h-8 bg-gray-200 rounded-full place-content-center justify-items-center '>
-                                <img src={text} alt="" className='w-4 h-4' />
+                                <img src={text} alt="" className='w-4 h-4' onClick={handleSendTranscript} />
                               </div>
                               <div className='w-8 h-8 bg-gray-200 rounded-full place-content-center justify-items-center '>
                                 <img src={deleted} alt="" className='w-4 h-4' />

@@ -1,9 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import 'react-quill/dist/quill.snow.css';
 import ReactQuill from 'react-quill';
 import Dots from '../assets/icons/dots.png';
-function RTE({ name, label, defaultValue = "", heightValue, onChange}) {
+
+function RTE({ name, label, defaultValue = "", heightValue, onChange }) {
   const [value, setValue] = useState(defaultValue);
+
+  useEffect(() => {
+    setValue(defaultValue);
+  }, [defaultValue]);
+
   const modules = {
     toolbar: [
       [{ 'font': [] }], // Font dropdown
@@ -23,6 +29,7 @@ function RTE({ name, label, defaultValue = "", heightValue, onChange}) {
       userOnly: true, // Tracks user edits only
     },
   };
+
   const handleChange = (newValue) => {
     setValue(newValue);
     if (onChange) {
@@ -45,7 +52,3 @@ function RTE({ name, label, defaultValue = "", heightValue, onChange}) {
   );
 }
 export default RTE;
-
-
-
-
