@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { DndContext, closestCenter } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import { useSensor, useSensors, PointerSensor, KeyboardSensor } from '@dnd-kit/core';
@@ -13,12 +13,11 @@ import copy from '../../assets/icons/copy.png';
 import filter from '../../assets/icons/filter.png';
 import dots from '../../assets/icons/dots.png';
 import dot from '../../assets/icons/dot.png';
-import { ReactMic } from 'react-mic';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPause, faPlay } from '@fortawesome/free-solid-svg-icons';
+import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 import './Patient.css';
 
-// DraggableItem component using useSortable hook for individual items
 function DraggableItem({ id, children }) {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
   const style = {
@@ -33,7 +32,6 @@ function DraggableItem({ id, children }) {
   );
 }
 
-// DraggableSection component using useSortable hook for main sections
 function DraggableSection({ id, children }) {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
   const style = {
@@ -49,8 +47,6 @@ function DraggableSection({ id, children }) {
 }
 
 function Patient_Sidebar({ rowData }) {
-  const [isRecording, setIsRecording] = useState(false);
-  const [recordedAudio, setRecordedAudio] = useState(null);
   const [templates, setTemplates] = useState([
     { id: 'template-1', text: 'Template name', details: 'Species: Bull Dog' },
     { id: 'template-2', text: 'Template name', details: 'Modality: MRI' },
@@ -65,6 +61,8 @@ function Patient_Sidebar({ rowData }) {
   ]);
   const [sections, setSections] = useState(['reportAudio', 'templates', 'macros']);
   const [draggingEnabled, setDraggingEnabled] = useState(true);
+  const { transcript, listening, resetTranscript, browserSupportsSpeechRecognition } = useSpeechRecognition();
+  const [isRecording, setIsRecording] = useState(false);
   const macroDataFrom = rowData.macros.split(',');
 
   const sensors = useSensors(
@@ -78,14 +76,21 @@ function Patient_Sidebar({ rowData }) {
     })
   );
 
-  const handleStartStopRecording = () => {
-    setIsRecording((prevState) => !prevState);
-  };
+  useEffect(() => {
+    console.log("Transcript data:", transcript);
+  }, [transcript]);
 
-  const handleOnStop = (recordedBlob) => {
-    console.log('Recorded Blob:', recordedBlob);
-    setRecordedAudio(recordedBlob);
-    // Process the audio blob here (e.g., send it to a speech-to-text API)
+  if (!browserSupportsSpeechRecognition) {
+    return <span>Browser doesn't support speech recognition.</span>;
+  }
+
+  const handleStartStopRecording = () => {
+    if (isRecording) {
+      SpeechRecognition.stopListening();
+    } else {
+      SpeechRecognition.startListening({ continuous: true });
+    }
+    setIsRecording((prevState) => !prevState);
   };
 
   const handleDragEnd = (event) => {
@@ -105,7 +110,7 @@ function Patient_Sidebar({ rowData }) {
   return (
     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
       <SortableContext items={sections}>
-        <div className=' space-y-1'>
+        <div className='space-y-1'>
           {sections.map((section) => {
             switch (section) {
               case 'reportAudio':
@@ -149,15 +154,6 @@ function Patient_Sidebar({ rowData }) {
                               />
                             </button>
                           </div>
-                          <div>
-                            <ReactMic
-                              record={isRecording}
-                              className="w-fit lg:w-full xl:w-80 h-8"
-                              onStop={handleOnStop}
-                              strokeColor=""
-                              backgroundColor="#FFFFFF"
-                            />
-                          </div>
                         </div>
                         <div className='flex relative mb-9 mt-12'>
                           <div className='bg-[#CBEA7B] border-4 w-16 h-16 rounded-full place-content-center justify-items-center absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center'>
@@ -167,6 +163,12 @@ function Patient_Sidebar({ rowData }) {
                             <h1 className='text-xs font-semibold'>1:30 min</h1>
                           </div>
                         </div>
+                        {transcript && (
+                          <div className='mt-4'>
+                            <h2 className='font-bold'>Transcription:</h2>
+                            <p>{transcript}</p>
+                          </div>
+                        )}
                       </div>
                     )}
                   </DraggableSection>
