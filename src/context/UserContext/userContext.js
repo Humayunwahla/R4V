@@ -12,6 +12,24 @@ export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
+    const initializeMsal = async () => {
+      try {
+        await msalInstance.initialize(); // Ensure MSAL is initialized
+        const response = await msalInstance.handleRedirectPromise();
+        if (response) {
+          setIsAuthenticated(true);
+          requestAccessToken();
+        } else {
+          const accounts = msalInstance.getAllAccounts();
+          if (accounts.length > 0) {
+            requestAccessToken();
+          }
+        }
+      } catch (error) {
+        console.error("MSAL initialization or redirection handling failed", error);
+      }
+    };
+
     // Check localStorage for existing user session
     const storedUser = JSON.parse(localStorage.getItem('user'));
     const storedAccessToken = localStorage.getItem('accessToken');
@@ -24,24 +42,6 @@ export const UserProvider = ({ children }) => {
       initializeMsal();
     }
   }, []);
-
-  const initializeMsal = async () => {
-    try {
-      await msalInstance.initialize(); // Ensure MSAL is initialized
-      const response = await msalInstance.handleRedirectPromise();
-      if (response) {
-        setIsAuthenticated(true);
-        requestAccessToken();
-      } else {
-        const accounts = msalInstance.getAllAccounts();
-        if (accounts.length > 0) {
-          requestAccessToken();
-        }
-      }
-    } catch (error) {
-      console.error("MSAL initialization or redirection handling failed", error);
-    }
-  };
 
   const requestAccessToken = () => {
     msalInstance.acquireTokenSilent({
@@ -77,11 +77,13 @@ export const UserProvider = ({ children }) => {
       });
   };
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
+    await msalInstance.initialize(); // Ensure MSAL is initialized
     msalInstance.loginRedirect(loginRequest);
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await msalInstance.initialize(); // Ensure MSAL is initialized
     msalInstance.logoutRedirect();
     setIsAuthenticated(false);
     setAccessToken(null);
