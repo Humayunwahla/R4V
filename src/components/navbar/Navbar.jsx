@@ -8,11 +8,22 @@ import { FaBars, FaTimes } from 'react-icons/fa';
 function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [fontSize, setFontSize] = useState(16); // Default font size
+  const [visibleCount, setVisibleCount] = useState(1);
   const toggleMenu = () => setMenuOpen(!menuOpen);
   // Increase font size
   const increaseFontSize = () => setFontSize((prev) => prev + 2);
   // Decrease font size
   const decreaseFontSize = () => setFontSize((prev) => Math.max(prev - 2, 10)); // Prevent font size from going below 10px
+  const handleClick = () => {
+    setVisibleCount(prevCount => prevCount + 1);
+  };
+  const patientInfo = [
+    { label: 'Patient Name', value: 'Dog' },
+    { label: 'Acc#', value: '3567s34244' },
+    { label: 'DOB', value: '12-12-2016' },
+    { label: 'Modality', value: 'MRI' },
+    { label: 'Gender', value: 'Male' },
+  ];
   return (
     <div className='bg-white w-full rounded-full lg:h-16 place-content-center items-center p-2 flex justify-between'>
       {/* Burger Icon for Small Screens */}
@@ -62,25 +73,14 @@ function Navbar() {
       )}
       {/* Grid Section - Always Visible for Large Screens */}
       <div className="hidden lg:flex gap-3 place-content-center ml-4">
-        <h1>
-          Patient Name: <span className="font-bold" style={{ fontSize: `${fontSize}px` }}>Dog</span>
-        </h1>
-        <h1>-</h1>
-        <h1>
-          Acc#: <span className="font-bold" style={{ fontSize: `${fontSize}px` }}>3567s34244</span>
-        </h1>
-        <h1>-</h1>
-        <h1>
-          DOB: <span className="font-bold" style={{ fontSize: `${fontSize}px` }}>12-12-2016</span>
-        </h1>
-        <h1>-</h1>
-        <h1>
-          Modality: <span className="font-bold" style={{ fontSize: `${fontSize}px` }}>MRI</span>
-        </h1>
-        <h1>-</h1>
-        <h1>
-          Gender: <span className="font-bold" style={{ fontSize: `${fontSize}px` }}>Male</span>
-        </h1>
+        {patientInfo.slice(0, visibleCount).map((info, index) => (
+          <React.Fragment key={index}>
+            <h1>
+              {info.label}: <span className="font-bold" style={{ fontSize: `${fontSize}px` }}>{info.value}</span>
+            </h1>
+            {index < visibleCount - 1 && <h1>-</h1>}
+          </React.Fragment>
+        ))}
       </div>
       <div className='flex w-3/5 sm:w-auto gap-4 place-content-center items-center'>
         {/* Minus Icon */}
@@ -92,9 +92,14 @@ function Navbar() {
           <img src={add} alt="" className='w-3.5 h-3.5' />
         </div>
         {/* Adding Icon */}
-        <div className='w-10 h-10 rounded-full bg-gray-200 place-content-center justify-items-center cursor-pointer'>
-          <img src={adding} alt="" className='w-6 h-6' />
+        {visibleCount < patientInfo.length && (
+        <div
+          className='w-10 h-10 rounded-full bg-gray-200 place-content-center justify-items-center cursor-pointer'
+          onClick={handleClick}
+        >
+          <img src={adding} alt="Add" className='w-6 h-6' />
         </div>
+      )}
         {/* Dots Icon */}
         <div className='bg-[#CBEA7B] w-10 h-10 rounded-full place-content-center justify-items-center cursor-pointer'>
           <img src={dots} alt="" className='w-1 h-4' />

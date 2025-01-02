@@ -78,7 +78,7 @@ function Header() {
           </button>
         </div>
         {isDrawerOpen && (
-          <div className="absolute top-0 left-0 w-64 h-full bg-white shadow-lg p-4 z-50 space-y-5">
+          <div className="absolute lg:hidden top-0 left-0 w-64 h-full bg-white shadow-lg p-4 z-50 space-y-5">
             <div className='flex flex-row justify-between'>
               <button
                 className="text-gray-500 mb-4 focus:outline-none"
@@ -110,8 +110,10 @@ function Header() {
                   <img src={analytics} alt="" className='h-5 w-3 ' />
                 </div>
               </div>
-              <div>
-                <button className='flex bg-gray-200 rounded-full h-7 justify-between  pr-2 gap-2 items-center'>
+              <div className='relative'>
+                <button
+                 onClick={toggleDropdown}
+                 className='flex bg-gray-200 rounded-full h-7 justify-between  pr-2 gap-2 items-center'>
 
                   <img src={profile} alt="" className='w-7 h-7 rounded-full' />
 
@@ -119,6 +121,16 @@ function Header() {
                   <img src={dropdown} alt="" className='w-2 h-1.5 ' />
 
                 </button>
+                {isDropdownOpen && (
+            <div className="absolute right-0 mt-5 w-48 bg-white shadow-md rounded-md z-50">
+              <button
+                onClick={() => handleLogout()}
+                className="block w-full text-left px-4 py-2 text-sm text-gray-700 bg-white"
+              >
+                Logout
+              </button>
+            </div>
+          )}
               </div>
             </div>
             <div className="flex flex-col gap-3">
@@ -170,7 +182,7 @@ function Header() {
           </button>
 
           {isDropdownOpen && (
-            <div className="absolute right-0 mt-5 w-48 bg-gray-300 shadow-md rounded-md z-50">
+            <div className="hidden lg:flex absolute right-0 mt-5 w-48 bg-gray-300 shadow-md rounded-md z-50">
               <button
                 onClick={() => handleLogout()}
                 className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
