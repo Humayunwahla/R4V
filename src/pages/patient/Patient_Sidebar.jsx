@@ -65,6 +65,7 @@ function Patient_Sidebar({ rowData }) {
   ]);
   const [sections, setSections] = useState(['reportAudio', 'templates', 'macros']);
   const [draggingEnabled, setDraggingEnabled] = useState(true);
+  const macroDataFrom = rowData.macros.split(',');
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -245,13 +246,13 @@ function Patient_Sidebar({ rowData }) {
                           </div>
                         </div>
                         <div className="space-y-1 blur-overlay blur-bottom macros-height overflow-scroll custom-scrollbar">
-                          {macros.map((macro, index) => (
-                            <div key={macro.id} className='w-full flex gap-2 bg-gray-300 place-content-center items-center h-auto p-3 rounded-2xl mt-3'>
+                          {macroDataFrom.map((macro, index) => (
+                            <div key={index} className='w-full flex gap-2 bg-gray-300 place-content-center items-center h-auto p-3 rounded-2xl mt-3'>
                               <div className='w-8 h-8 place-content-center justify-items-center bg-black rounded-full'>
                                 <img src={dot} alt="" className='w-2 h-3' />
                               </div>
                               <div className='w-11/12'>
-                                <h1 className='macros-text'>{rowData.macros}</h1>
+                                <h1 className='macros-text'>{macro}</h1>
                               </div>
                             </div>
                           ))}
