@@ -11,6 +11,7 @@ import { RiFilter2Line } from "react-icons/ri";
 import dots from '../../assets/icons/dots.png';
 import './Patient.css';
 import { useLocation } from 'react-router-dom';
+
 // DraggableSection component using useSortable hook for main sections
 function DraggableSection({ id, children }) {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
@@ -20,11 +21,12 @@ function DraggableSection({ id, children }) {
     touchAction: 'none',
   };
   return (
-    <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
-      {children}
+    <div ref={setNodeRef} style={style} {...attributes}>
+      {children(listeners)}
     </div>
   );
 }
+
 function Patient() {
   const [isRecording, setIsRecording] = useState(false);
   const [recordedAudio, setRecordedAudio] = useState(null);
@@ -38,15 +40,17 @@ function Patient() {
     })
   );
   console.log('Row Data:', rowData);
-  
+
   const handleStartStopRecording = () => {
     setIsRecording((prevState) => !prevState);
   };
+
   const handleOnStop = (recordedBlob) => {
     console.log('Recorded Blob:', recordedBlob);
     setRecordedAudio(recordedBlob);
     // Process the audio blob here (e.g., send it to a speech-to-text API)
   };
+
   const handleDragEnd = (event) => {
     const { active, over } = event;
     if (active.id !== over.id) {
@@ -57,6 +61,7 @@ function Patient() {
       });
     }
   };
+
   return (
     <div>
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
@@ -65,22 +70,31 @@ function Patient() {
             {sections.map((section) => {
               if (section === 'rte') {
                 return (
-                  <div className='lg:w-4/6'>
-                  <DraggableSection key={section} id={section}>
-                    <div className=''>
-                      <RTE name="editor" heightValue={800}  defaultValue="Initial content for Card 2" />
-                    </div>
-                  </DraggableSection>
+                  <div className='lg:w-4/6' key={section}>
+                    <DraggableSection id={section}>
+                      {(listeners) => (
+                        <div className='relative'>
+                          <div className="drag-handle bg-[#CBEA7B] w-8 h-8 rounded-full flex justify-center items-center absolute z-50 right-0 top-0 mt-1 mr-1" {...listeners}>
+                            <img src={dots} alt="" className="w-1 h-4" />
+                          </div>
+                          <div>
+                            <RTE name="editor" heightValue={800} defaultValue="Initial content for Card 2" />
+                          </div>
+                        </div>
+                      )}
+                    </DraggableSection>
                   </div>
                 );
               } else if (section === 'sidebar') {
                 return (
-                  <div className='lg:w-2/6'>
-                  <DraggableSection key={section} id={section}>
-                    <Patient_Sidebar
-                    rowData={rowData}
-                     />
-                  </DraggableSection>
+                  <div className='lg:w-2/6' key={section}>
+                    <DraggableSection id={section}>
+                      {(listeners) => (
+                        <div>
+                          <Patient_Sidebar rowData={rowData} />
+                        </div>
+                      )}
+                    </DraggableSection>
                   </div>
                 );
               }
@@ -233,7 +247,5 @@ function Patient() {
     </div>
   );
 }
+
 export default Patient;
-
-
-
