@@ -303,6 +303,7 @@ function Home() {
     };
 
     const templateData = {
+      TemplateId: templateId,
       TemplateName: template.add_information.name,
       Content: JSON.stringify(contentObject),
       SpeciesId: species.indexOf(template.add_information.species) + 1,
