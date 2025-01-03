@@ -307,7 +307,7 @@ function Home() {
       TemplateName: template.add_information.name,
       Content: JSON.stringify(contentObject),
       SpeciesId: species.indexOf(template.add_information.species) + 1,
-      ModalityTypeId: modality_type.find(type => type.name === template.add_information.modality_type)?.modality_type_id,
+      ModalityTypeId:template.add_information.modality_type?.modality_type_id,
       StudyTypeId: template.add_information.study_type?.study_type_id,
       Description: bodyContent,
       IsActive: true,
