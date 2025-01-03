@@ -6,13 +6,16 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import RTE from '../../components/RTE';
 import Patient_Sidebar from './Patient_Sidebar';
-import { BsViewStacked } from "react-icons/bs";
+import { BsViewStacked, BsStars } from "react-icons/bs";
 import { RiFilter2Line } from "react-icons/ri";
 import dots from '../../assets/icons/dots.png';
 import './Patient.css';
 import { useLocation } from 'react-router-dom';
-import { BsStars } from "react-icons/bs";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
+// Access your API key as an environment variable (see "Set up your API key" above)
+const Api_key = "AIzaSyAYMIlZgtZf-j0584SHSzj-9mSG9Bhw59Q";
+const genAI = new GoogleGenerativeAI(Api_key);
 
 // DraggableSection component using useSortable hook for main sections
 function DraggableSection({ id, children }) {
@@ -42,9 +45,8 @@ function Patient() {
       coordinateGetter: sortableKeyboardCoordinates,
     })
   );
-  console.log('Row Data:', rowData);
- console.log('Transcript:', transcript);
- 
+  const [responseText, setResponseText] = useState('');
+
   const handleStartStopRecording = () => {
     setIsRecording((prevState) => !prevState);
   };
@@ -54,6 +56,7 @@ function Patient() {
     setRecordedAudio(recordedBlob);
     // Process the audio blob here (e.g., send it to a speech-to-text API)
   };
+
   const handleTranscriptChange = (newTranscript) => {
     setTranscript(newTranscript); // Update the transcript state
   };
@@ -69,6 +72,58 @@ function Patient() {
     }
   };
 
+  const fetchData = async (userPrompt) => {
+    try {
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+      const result = await model.generateContent(userPrompt);
+      const response = await result.response;
+      const text = await response.text();
+      setResponseText(formatResponse(text)); // Format the response text
+      setTranscript(text); // Update the RTE component with the response
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const handleProcessWithAI = () => {
+    fetchData(transcript);
+  };
+
+  // Function to format the response text
+  const formatResponse = (text) => {
+    const lines = text.split("\n");
+    let inList = false;
+    const formattedLines = lines.map((line) => {
+      if (line.startsWith("**") && line.endsWith("**")) {
+        // Bold text
+        return `<p><strong>${line.slice(2, -2)}</strong></p>`;
+      } else if (line.startsWith("* ")) {
+        // List item
+        if (!inList) {
+          inList = true;
+          return `<ul><li>${line.slice(2)}</li>`;
+        } else {
+          return `<li>${line.slice(2)}</li>`;
+        }
+      } else {
+        // Paragraph
+        if (inList) {
+          inList = false;
+          return `</ul><p>${line}</p>`;
+        } else {
+          return `<p>${line}</p>`;
+        }
+      }
+    });
+
+    // Close any unclosed list
+    if (inList) {
+      formattedLines.push("</ul>");
+    }
+
+    return formattedLines.join(""); // Combine the formatted lines
+  };
+
   return (
     <div>
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
@@ -79,7 +134,12 @@ function Patient() {
                 return (
                   <div className='lg:w-4/6' key={section}>
                     <div className='flex justify-end'>
-                      <button className="border  bg-[#CBEA7B80] p-2 rounded-full  mt-2 flex items-center justify-center gap-1" >Process with AI <span><BsStars color='black' /></span></button> 
+                      <button
+                        className="border bg-[#CBEA7B80] p-2 rounded-full mt-2 flex items-center justify-center gap-1"
+                        onClick={handleProcessWithAI}
+                      >
+                        Process with AI <span><BsStars color='black' /></span>
+                      </button>
                     </div>
                     <DraggableSection id={section}>
                       {(listeners) => (
@@ -89,6 +149,7 @@ function Patient() {
                           </div>
                           <div>
                             <RTE name="editor" heightValue={800} defaultValue={transcript || "default"} value={transcript} />
+                            {/* <div dangerouslySetInnerHTML={{ __html: responseText }} />  */}
                           </div>
                         </div>
                       )}

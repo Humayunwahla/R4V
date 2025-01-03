@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { DndContext, closestCenter } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import { useSensor, useSensors, PointerSensor, KeyboardSensor } from '@dnd-kit/core';
@@ -101,6 +101,10 @@ function Patient_Sidebar({ rowData, onTranscriptChange }) {
     setIsRecording((prevState) => !prevState);
   };
 
+  const handleDeleteTranscript = () => {
+    resetTranscript(); // Clears the transcript
+  };
+
   const handleDragEnd = (event) => {
     const { active, over } = event;
     if (active.id !== over.id) {
@@ -135,7 +139,7 @@ function Patient_Sidebar({ rowData, onTranscriptChange }) {
                             </div>
                             <div className=''>
                               <h1 className='font-bold'>Report Audio</h1>
-                              <h1 className='macros-text'>Find your saved your templates here</h1>
+                              <h1 className='macros-text'>Find your saved templates here</h1>
                             </div>
                             <div className='flex gap-1'>
                               <div className='w-8 h-8 bg-gray-200 rounded-full place-content-center justify-items-center '>
@@ -145,7 +149,7 @@ function Patient_Sidebar({ rowData, onTranscriptChange }) {
                                 <img src={text} alt="" className='w-4 h-4' onClick={handleSendTranscript} />
                               </div>
                               <div className='w-8 h-8 bg-gray-200 rounded-full place-content-center justify-items-center '>
-                                <img src={deleted} alt="" className='w-4 h-4' />
+                                <img src={deleted} alt="" className='w-4 h-4' onClick={handleDeleteTranscript} />
                               </div>
                             </div>
                           </div>
@@ -193,7 +197,7 @@ function Patient_Sidebar({ rowData, onTranscriptChange }) {
                             </div>
                             <div className='text-xs'>
                               <h1 className='font-bold'>Templates</h1>
-                              <h1 className='text-xs'>Find your saved your templates here</h1>
+                              <h1 className='text-xs'>Find your saved templates here</h1>
                             </div>
                           </div>
                           <div className='gap-1 flex'>
