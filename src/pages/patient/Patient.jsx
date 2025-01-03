@@ -12,6 +12,7 @@ import dots from '../../assets/icons/dots.png';
 import './Patient.css';
 import { useLocation } from 'react-router-dom';
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { ClipLoader } from 'react-spinners'; // Import ClipLoader from react-spinners
 
 // Access your API key as an environment variable (see "Set up your API key" above)
 const Api_key = "AIzaSyAYMIlZgtZf-j0584SHSzj-9mSG9Bhw59Q";
@@ -46,6 +47,7 @@ function Patient() {
     })
   );
   const [responseText, setResponseText] = useState('');
+  const [loading, setLoading] = useState(false); // Loading state
 
   const handleStartStopRecording = () => {
     setIsRecording((prevState) => !prevState);
@@ -73,6 +75,7 @@ function Patient() {
   };
 
   const fetchData = async (userPrompt) => {
+    setLoading(true); // Start loading
     try {
       const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
       const result = await model.generateContent(userPrompt);
@@ -82,6 +85,8 @@ function Patient() {
       setTranscript(text); // Update the RTE component with the response
     } catch (error) {
       console.error("Error fetching data:", error);
+    } finally {
+      setLoading(false); // Stop loading
     }
   };
 
@@ -149,7 +154,11 @@ function Patient() {
                           </div>
                           <div>
                             <RTE name="editor" heightValue={800} defaultValue={transcript || "default"} value={transcript} />
-                            {/* <div dangerouslySetInnerHTML={{ __html: responseText }} />  */}
+                            {loading && (
+                              <div className="loading-overlay">
+                                <ClipLoader color="#CBEA7B" loading={loading} size={50} />
+                              </div>
+                            )}
                           </div>
                         </div>
                       )}

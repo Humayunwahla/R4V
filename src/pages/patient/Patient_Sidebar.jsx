@@ -259,17 +259,20 @@ function Patient_Sidebar({ rowData, onTranscriptChange }) {
                             </div>
                           </div>
                         </div>
-                        <div className="space-y-1 blur-overlay blur-bottom macros-height overflow-scroll custom-scrollbar">
-                          {macroDataFrom.map((macro, index) => (
-                            <div key={index} className='w-full flex gap-2 bg-gray-300 place-content-center items-center h-auto p-3 rounded-2xl mt-3'>
-                              <div className='w-8 h-8 place-content-center justify-items-center bg-black rounded-full'>
-                                <img src={dot} alt="" className='w-2 h-3' />
+                        <div className="relative space-y-1 blur-overlay blur-bottom macros-height overflow-scroll custom-scrollbar">
+                          <div className="overflow-y-scroll h-96">
+                            {macroDataFrom.map((macro, index) => (
+                              <div key={index} className='w-full flex gap-2 bg-gray-300 place-content-center items-center h-auto p-3 rounded-2xl mt-3'>
+                                <div className='w-8 h-8 place-content-center justify-items-center bg-black rounded-full'>
+                                  <img src={dot} alt="" className='w-2 h-3' />
+                                </div>
+                                <div className='w-11/12'>
+                                  <h1 className='macros-text'>{macro}</h1>
+                                </div>
                               </div>
-                              <div className='w-11/12'>
-                                <h1 className='macros-text'>{macro}</h1>
-                              </div>
-                            </div>
-                          ))}
+                            ))}
+                          </div>
+                          <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-white to-transparent pointer-events-none"></div>
                         </div>
                       </div>
                     )}

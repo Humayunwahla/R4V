@@ -64,7 +64,7 @@ function App() {
         <>
           <Header />
           <Router>
-            <div className='fixed bottom-3 right-3'>
+            <div className='fixed bottom-3 right-3 z-50'>
               <Message />
             </div>
             <Routes>
